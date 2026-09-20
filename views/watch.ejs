@@ -44,9 +44,9 @@
         <!-- Video Details Header -->
         <h1 class="watch-video-title"><%= video.title %></h1>
 
-        <div class="info-row" style="margin-top: 10px; margin-bottom: 14px;">
-          <span class="info-label">Bio:</span>
-          <span class="info-val val-starcast"><%= video.description || ((video.tags && video.tags.trim()) ? video.tags : (video.movie_name || video.title)) %></span>
+        <div class="watch-bio-desc-box">
+          <span class="bio-label">Bio:</span>
+          <span class="bio-val"><%= video.description || ((video.tags && video.tags.trim()) ? video.tags : (video.movie_name || video.title)) %></span>
         </div>
 
       </div>
