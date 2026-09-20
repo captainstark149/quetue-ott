@@ -328,9 +328,114 @@
       width: 100%;
     }
 
+    .mobile-menu-btn {
+      display: none;
+      background: rgba(233, 30, 99, 0.1);
+      border: 1px solid var(--admin-pink, #e91e63);
+      border-radius: 8px;
+      font-size: 1.1rem;
+      color: var(--admin-pink, #e91e63);
+      cursor: pointer;
+      padding: 6px 12px;
+      margin-right: 10px;
+      align-items: center;
+      gap: 6px;
+      font-weight: 700;
+    }
+
+    .admin-sidebar-close-btn {
+      display: none;
+      background: none;
+      border: none;
+      font-size: 1.3rem;
+      color: #94a3b8;
+      cursor: pointer;
+      padding: 4px;
+    }
+
+    .admin-brand-wrap {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px;
+    }
+
+    .admin-sidebar-scrim {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.65);
+      z-index: 990;
+      backdrop-filter: blur(2px);
+    }
+
+    @media (max-width: 768px) {
+      .admin-sidebar-close-btn {
+        display: block !important;
+      }
+    }
+
     @media (max-width: 1024px) {
       .admin-grid-layout {
         grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .mobile-menu-btn {
+        display: inline-flex !important;
+        align-items: center;
+        justify-content: center;
+      }
+      body.admin-sidebar-open .admin-sidebar-scrim {
+        display: block !important;
+      }
+      .admin-sidebar {
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+        box-shadow: 0 0 20px rgba(0,0,0,0.3);
+      }
+      body.admin-sidebar-open .admin-sidebar {
+        transform: translateX(0) !important;
+      }
+      .admin-main-wrapper {
+        margin-left: 0 !important;
+        width: 100% !important;
+      }
+      .admin-topbar {
+        padding: 0 12px !important;
+        height: 56px !important;
+      }
+      .admin-search-wrap {
+        width: 100% !important;
+        max-width: 160px !important;
+      }
+      .admin-stats-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 10px !important;
+      }
+      .admin-welcome-bar {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 10px !important;
+      }
+      .admin-date-badge {
+        width: 100% !important;
+        box-sizing: border-box !important;
+        justify-content: space-between !important;
+      }
+      .admin-panel-card {
+        padding: 14px !important;
+        border-radius: 10px !important;
+      }
+      .card-header-flex {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 10px !important;
+      }
+      .admin-table th, .admin-table td {
+        padding: 8px 6px !important;
+        font-size: 0.78rem !important;
       }
     }
 
@@ -506,12 +611,17 @@
     <!-- Sidebar Navigation -->
     <aside class="admin-sidebar">
       <div class="admin-sidebar-top">
-        <a href="/" class="admin-brand">
-          <div class="admin-brand-logo">
-            <i class="fa-solid fa-play"></i>
-          </div>
-          <span class="admin-brand-title">QueTue</span>
-        </a>
+        <div class="admin-brand-wrap">
+          <a href="/" class="admin-brand" style="margin-bottom: 0;">
+            <div class="admin-brand-logo">
+              <i class="fa-solid fa-play"></i>
+            </div>
+            <span class="admin-brand-title">QueTue</span>
+          </a>
+          <button type="button" class="admin-sidebar-close-btn" onclick="document.body.classList.remove('admin-sidebar-open')" title="Close Sidebar">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
 
         <ul class="admin-nav-list">
           <li class="admin-nav-item <%= (!selectedCat || selectedCat === 'All') ? 'active' : '' %>">
@@ -540,11 +650,17 @@
       </div>
     </aside>
 
+    <!-- Mobile Sidebar Backdrop Scrim -->
+    <div class="admin-sidebar-scrim" onclick="document.body.classList.remove('admin-sidebar-open')"></div>
+
     <!-- Main Content Wrapper -->
     <div class="admin-main-wrapper">
       <!-- Top Navbar -->
       <header class="admin-topbar">
-        <div>
+        <div style="display: flex; align-items: center;">
+          <button type="button" class="mobile-menu-btn" onclick="document.body.classList.toggle('admin-sidebar-open')" title="Toggle Menu">
+            <i class="fa-solid fa-bars"></i>
+          </button>
           <% if (selectedCat === 'Decorate Videos' || selectedCat === 'Decorate') { %>
             <% if (typeof selectedSection !== 'undefined' && selectedSection) { %>
               <% if (typeof sectionMode !== 'undefined' && sectionMode === 'add') { %>
