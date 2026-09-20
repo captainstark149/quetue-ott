@@ -254,7 +254,39 @@ db.serialize(() => {
     }
   });
 
-  // No initial sample video seeding - clean database for fresh deployment
+  // Auto-restore stored uploads from db/uploads_store.json into SQLite database if missing
+  try {
+    const uploadStore = require('./uploadStore');
+    const storedItems = uploadStore.getStoredUploads();
+    if (storedItems && storedItems.length > 0) {
+      storedItems.forEach(v => {
+        db.get('SELECT id FROM videos WHERE id = ?', [v.id], (err, row) => {
+          if (!err && !row) {
+            db.run(
+              `INSERT INTO videos (id, title, movie_name, description, video_url, thumbnail_url, main_image_url, mobile_image_url, sidebar_image_url, category, section, homepage_section, grid_position, tags, uploader_id, uploader_name, uploader_avatar, duration, media_type, release_date, language, short_about, size, quality, bio_label_type)
+               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+              [
+                v.id, v.title, v.movie_name || v.title, v.description || '', v.video_url || '#',
+                v.thumbnail_url || '', v.main_image_url || v.thumbnail_url || '',
+                v.mobile_image_url || v.thumbnail_url || '', v.sidebar_image_url || v.thumbnail_url || '',
+                v.category || 'General', v.section || 'none', v.homepage_section || 'none',
+                v.grid_position || 'none', v.tags || '', v.uploader_id || 'user_custom',
+                v.uploader_name || 'QueTue Studio', v.uploader_avatar || '', v.duration || '',
+                v.media_type || 'video', v.release_date || '', v.language || '',
+                v.short_about || '', v.size || '410Mb 680Mb 1Gb 2.5Gb 4.9Gb 6.1Gb 9.3Gb HD',
+                v.quality || 'PreDvD', v.bio_label_type || 'Bio'
+              ],
+              (insertErr) => {
+                if (!insertErr) console.log(`🔄 Auto-restored video post ${v.id} (${v.title}) from uploads_store.json`);
+              }
+            );
+          }
+        });
+      });
+    }
+  } catch (e) {
+    console.error('Error auto-restoring from uploads_store.json:', e);
+  }
 });
 
 db.deleteVideoCompletely = function(videoId, callback) {
