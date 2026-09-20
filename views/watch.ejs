@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('partials/head') %>
+</head>
+<body>
+  <%- include('partials/navbar') %>
+
+  <%
+    function getDirectImgUrl(url) {
+      if (!url) return '';
+      if (url.includes('drive.google.com') || url.includes('docs.google.com')) {
+        const match = url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/) || url.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+        if (match && match[1]) {
+          return 'https://lh3.googleusercontent.com/d/' + match[1];
+        }
+      }
+      return url;
+    }
+    const mainImgSrc = getDirectImgUrl(video.main_image_url || video.thumbnail_url || video.video_url);
+    const sidebarImgSrc = getDirectImgUrl(video.sidebar_image_url || video.thumbnail_url || video.main_image_url);
+  %>
+
+  <div class="que-content-wrap watch-page-wrap">
+    <div class="watch-container">
+      <!-- Left: Main Video Player & Details -->
+      <div class="player-section">
+        <!-- Media Player / Image Display Wrapper -->
+        <!-- Fixed Media Player & Image Display Container -->
+        <div class="video-wrapper">
+          <% 
+            const isImageMedia = (video.media_type === 'image' || video.duration === 'PHOTO' || (!video.video_url && video.thumbnail_url));
+          %>
+          <% if (isImageMedia) { %>
+            <img id="mainVideoPlayer" src="<%= mainImgSrc %>" alt="<%= video.title %>" class="main-player-poster" style="width:100%; height:100%; object-fit:contain; border-radius:12px; display:block; background:#000;" />
+          <% } else { %>
+            <video id="mainVideoPlayer" controls poster="<%= getDirectImgUrl(video.thumbnail_url) %>">
+              <source src="<%= video.video_url %>" type="video/mp4">
+              Your browser does not support the video tag.
+            </video>
+          <% } %>
+        </div>
+
+        <!-- Video Details Header -->
+        <h1 class="watch-video-title"><%= video.title %></h1>
+
+        <% if (video.short_about) { %>
+          <div class="watch-short-about-text">
+            <i class="fa-solid fa-quote-left" style="color:var(--que-pink)"></i> <%= video.short_about %>
+          </div>
+        <% } %>
+
+        <% if (video.description) { %>
+          <div class="watch-desc-box">
+            <p class="desc-text"><%= video.description %></p>
+          </div>
+        <% } %>
+      </div>
+
+      <!-- Right: Related Section (File Info Card with 3rd Image) -->
+      <div class="related-section">
+        <div class="file-info-card">
+          <!-- Top: 3rd Image / Poster -->
+          <div class="sidebar-image-wrap">
+            <img src="<%= sidebarImgSrc %>" alt="<%= video.title %> Poster" class="sidebar-3rd-img" />
+          </div>
+
+          <!-- File Info Header Bar -->
+          <div class="file-info-header">
+            👉 File Info 👈
+          </div>
+
+          <!-- Key-Value Info List -->
+          <div class="file-info-body">
+            <div class="info-row">
+              <span class="info-label">Name:</span>
+              <span class="info-val val-name"><%= video.movie_name || video.title %></span>
+            </div>
+
+            <% if (video.category) { %>
+              <div class="info-row">
+                <span class="info-label">Genre:</span>
+                <span class="info-val val-genre"><%= video.category %></span>
+              </div>
+            <% } %>
+
+            <% if (video.duration && video.duration !== 'PHOTO') { %>
+              <div class="info-row">
+                <span class="info-label">Duration:</span>
+                <span class="info-val val-duration"><%= video.duration %></span>
+              </div>
+            <% } %>
+
+            <% if (video.release_date) { %>
+              <div class="info-row">
+                <span class="info-label">Release Date:</span>
+                <span class="info-val val-release"><%= video.release_date %></span>
+              </div>
+            <% } %>
+
+            <% if (video.language) { %>
+              <div class="info-row">
+                <span class="info-label">Language:</span>
+                <span class="info-val val-lang"><%= video.language %></span>
+              </div>
+            <% } %>
+
+            <div class="info-row">
+              <span class="info-label">Bio:</span>
+              <span class="info-val val-starcast"><%= (video.tags && video.tags.trim()) ? video.tags : (video.movie_name || video.title) %></span>
+            </div>
+
+            <div class="info-row">
+              <span class="info-label">Size:</span>
+              <span class="info-val val-size"><%= video.size || '450Mb 740Mb 1.1Gb 2.7Gb 5.5Gb' %></span>
+            </div>
+
+            <% if (video.description) { %>
+              <div class="info-row">
+                <span class="info-label">Description:</span>
+                <span class="info-val val-desc"><%= video.description %></span>
+              </div>
+            <% } %>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Download Section Block (Directly Below watch-container) -->
+    <div class="download-section-wrap main-download-block">
+      <div class="download-banner">DOWNLOAD THIS MOVIE</div>
+      <div class="download-btn-wrap">
+        <a href="<%= video.video_url || '#' %>" download class="btn-download-green">
+          Download 480p 720p 1080p<br>[<%= video.quality || 'PreDvD' %>]
+        </a>
+      </div>
+    </div>
+
+    <!-- Recommendations Section Below Download Block -->
+    <% if (relatedVideos && relatedVideos.length > 0) { %>
+      <div class="bottom-recommendations-section">
+        <h3 class="recommendations-title"><i class="fa-solid fa-fire" style="color:var(--que-pink)"></i> You May Also Like</h3>
+        <div class="recommendations-grid">
+          <% relatedVideos.forEach(rel => { %>
+            <a href="/watch/<%= rel.id %>" class="recommended-card-item">
+              <div class="recommended-thumb-wrap">
+                <img src="<%= getDirectImgUrl(rel.thumbnail_url) %>" alt="<%= rel.title %>" onerror="this.src='https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=400&q=80'" />
+              </div>
+              <div class="recommended-card-info">
+                <h4 class="recommended-card-title" title="<%= rel.title %>"><%= rel.title %></h4>
+              </div>
+            </a>
+          <% }); %>
+        </div>
+      </div>
+    <% } %>
+  </div>
+
+  <%- include('partials/footer') %>
+</body>
+</html>

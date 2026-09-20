@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('partials/head') %>
+</head>
+<body>
+  <%- include('partials/navbar') %>
+
+  <div class="que-container">
+    <div style="display: flex; gap: 24px;">
+      <!-- Left Sidebar Navigation -->
+      <%- include('partials/sidebar') %>
+
+      <!-- Right Main Area -->
+      <main style="flex: 1; min-width: 0;">
+        <!-- Single-Line Category Slider Bar with 'All' at the Front -->
+        <div class="category-bar-wrapper">
+          <div class="category-slider-container">
+            <button id="catScrollLeft" class="cat-scroll-btn left" title="Scroll Left" style="display: none;">
+              <i class="fa-solid fa-chevron-left"></i>
+            </button>
+
+            <div class="category-cards-grid" id="categoryCardsGrid">
+              <!-- 'All' Option at the very front -->
+              <a href="/?category=All" class="cat-icon-card <%= (typeof selectedCategory === 'undefined' || selectedCategory === 'All') ? 'active' : '' %>">
+                <span>All</span>
+              </a>
+              <% (typeof categoriesList !== 'undefined' && categoriesList.length > 0 ? categoriesList : [
+                { name: 'Movie', slug: 'Movie' },
+                { name: 'Web Series', slug: 'Web Series' },
+                { name: 'Anime', slug: 'Anime' },
+                { name: 'Documentary', slug: 'Documentary' },
+                { name: 'Game', slug: 'Game' },
+                { name: 'Technology', slug: 'Technology' },
+                { name: 'Gourmet Food', slug: 'Gourmet Food' },
+                { name: 'Variety Show', slug: 'Variety Show' },
+                { name: 'Music', slug: 'Music' }
+              ]).forEach(cat => { 
+                const catSlug = cat.slug || cat.name;
+                const selLower = decodeURIComponent(selectedCategory || '').toLowerCase();
+                const nameLower = cat.name.toLowerCase();
+                const slugLower = catSlug.toLowerCase();
+
+                let isSelected = (selLower === nameLower || selLower === slugLower);
+                if (!isSelected) {
+                  if ((selLower === 'movie' || selLower === 'movies') && (nameLower === 'movie' || nameLower === 'movies')) isSelected = true;
+                  if ((selLower === 'tv' || selLower === 'web series') && (nameLower === 'tv' || nameLower === 'web series')) isSelected = true;
+                  if ((selLower === 'anime' || selLower === 'animation' || selLower === 'animation movies') && (nameLower === 'anime' || nameLower === 'animation')) isSelected = true;
+                  if ((selLower === 'game' || selLower === 'gaming & sports') && (nameLower === 'game' || nameLower === 'gaming')) isSelected = true;
+                }
+              %>
+                <a href="/?category=<%= encodeURIComponent(catSlug) %>" class="cat-icon-card <%= isSelected ? 'active' : '' %>">
+                  <span><%= cat.name %></span>
+                </a>
+              <% }); %>
+            </div>
+
+            <button id="catScrollRight" class="cat-scroll-btn right" title="Scroll Right">
+              <i class="fa-solid fa-chevron-right"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Top Hero & 2x2 Video Grid Section -->
+        <div class="hero-grid-layout">
+          <!-- Left Hero Main Featured Card with Auto-Slideshow -->
+          <% 
+            const hpMap = { 'hero_main': 1, 'position2': 2, 'position3': 3, 'position4': 4 };
+            const heroPositionVideos = (videos && videos.length > 0) 
+              ? videos.filter(v => v.homepage_section && hpMap[v.homepage_section]).sort((a, b) => hpMap[a.homepage_section] - hpMap[b.homepage_section]) 
+              : [];
+            const heroVideo = heroPositionVideos.length > 0 ? heroPositionVideos[0] : null; 
+
+            let gridVideos = (videos && videos.length > 0) ? videos.filter(v => (v.grid_position && v.grid_position !== 'none') || (v.section === 'hero_grid' || (v.section && v.section.startsWith('grid_')))) : [];
+            gridVideos.sort((a, b) => {
+              const map = { 'hero_grid': 1, 'grid_1': 1, 'grid_2': 2, 'grid_3': 3, 'grid_4': 4 };
+              const posA = a.grid_position || a.section;
+              const posB = b.grid_position || b.section;
+              return (map[posA] || 99) - (map[posB] || 99);
+            });
+          %>
+          <% if (heroVideo) { %>
+            <div class="que-hero-card" id="queHeroCard">
+              <span class="hero-exclusive-badge">独家 Exclusive</span>
+
+              <div class="hero-slides-wrapper" id="heroSlidesWrapper">
+                <img src="<%= heroVideo.thumbnail_url %>" id="heroCardImage" class="hero-slide-img pos-center" alt="<%= heroVideo.title %>" />
+                <img src="" id="heroCardImageNext" class="hero-slide-img pos-right" alt="" style="display:none;" />
+              </div>
+
+              <button class="hero-arrow-nav left" id="heroPrevBtn"><i class="fa-solid fa-chevron-left"></i></button>
+              <button class="hero-arrow-nav right" id="heroNextBtn"><i class="fa-solid fa-chevron-right"></i></button>
+
+              <div class="hero-overlay-content">
+                <a href="/watch/<%= heroVideo.id %>" class="hero-title-text" id="heroCardTitle"><%= heroVideo.title %></a>
+                <div class="hero-sub-text" id="heroCardSub"><%= heroVideo.description %></div>
+                
+                <div style="display:flex; align-items:center; justify-content:space-between; margin-top:12px;">
+                  <a href="/watch/<%= heroVideo.id %>" id="heroPlayBtn" class="btn-send-danmaku" style="padding: 8px 20px; text-decoration:none; display:inline-flex; align-items:center; gap:8px; font-weight:800; font-size:0.9rem; border-radius:20px; box-shadow:0 4px 14px rgba(255,102,153,0.4);">
+                    <i class="fa-solid fa-play"></i> Watch Now
+                  </a>
+                  <div class="hero-pagination-dots" id="heroDotsGroup"></div>
+                </div>
+              </div>
+            </div>
+          <% } else { %>
+            <div class="que-hero-card" id="queHeroCard" style="display: flex; flex-direction: column; align-items: center; justify-content: center; background: linear-gradient(135deg, #181920, #222533); border: 2px dashed #fb7299; padding: 24px; text-align: center; border-radius: 12px;">
+              <i class="fa-solid fa-clapperboard" style="font-size: 2.8rem; color: #fb7299; margin-bottom: 12px;"></i>
+              <p style="color: #9499a0; font-size: 0.9rem; max-width: 320px; line-height: 1.4;">No video assigned to hero banner. Feature any video from Admin Dashboard to show it here.</p>
+            </div>
+          <% } %>
+
+          <!-- Right 2x2 Video Cards Grid (Position 2: hero_grid) -->
+          <div class="top-2x2-grid">
+            <% if (gridVideos.length > 0) { %>
+              <% gridVideos.forEach(v => { %>
+                <a href="/watch/<%= v.id %>" class="grid-video-card">
+                  <div class="grid-thumb-wrap">
+                    <img src="<%= v.thumbnail_url %>" alt="<%= v.title %>" />
+                    
+                    <div class="grid-thumb-stats">
+                      <% if (v.duration && v.duration.trim() && v.duration !== 'PHOTO') { %>
+                        <span class="duration-tag" style="margin-left: auto;"><%= v.duration %></span>
+                      <% } %>
+                    </div>
+                  </div>
+                </a>
+              <% }); %>
+            <% } else { %>
+              <% [1, 2, 3, 4].forEach(slot => { %>
+                <div class="grid-video-card" style="display: flex; flex-direction: column; align-items: center; justify-content: center; background: #ffffff; border: 2px dashed #e3e5e7; padding: 12px; text-align: center; border-radius: 12px;">
+                  <i class="fa-solid fa-clapperboard" style="font-size: 1.6rem; color: #fb7299; margin-bottom: 6px;"></i>
+                  <span style="font-size: 0.78rem; font-weight: 700; color: var(--text-muted);">No Video Assigned</span>
+                </div>
+              <% }); %>
+            <% } %>
+          </div>
+        </div>
+
+        <!-- Mobile OTT Specific Home Sections (< 768px) (User Custom Design) -->
+        <div class="mobile-ott-home-wrapper">
+          
+          <% 
+            const mobHeroVideos = (typeof heroPositionVideos !== 'undefined' && heroPositionVideos.length > 0)
+              ? heroPositionVideos 
+              : ((typeof videos !== 'undefined' && videos.length > 0) ? videos.slice(0, 6) : []);
+          %>
+
+          <!-- 0. Mobile Hero Banner Rail (Horizontal Scroll Carousel) -->
+          <section id="hero" class="mobile-hero-section">
+            <div class="hrail" id="hrail">
+              <% if (mobHeroVideos.length > 0) { %>
+                <% mobHeroVideos.forEach((mobHero, index) => { %>
+                  <% 
+                    const heroBannerImg = (mobHero.mobile_image_url && mobHero.mobile_image_url.trim()) ? mobHero.mobile_image_url : (mobHero.thumbnail_url || "https://images.unsplash.com/photo-1578632767115-351597cf2477?auto=format&fit=crop&w=800&q=80");
+                    const heroBannerLink = `/watch/${mobHero.id}`;
+                  %>
+                  <article class="slide <%= index === 0 ? 'active' : '' %>" data-id="<%= mobHero.id %>" data-idx="<%= index %>">
+                    <img src="<%= heroBannerImg %>" class="hart hero-card-img-mob" alt="Featured" onerror="this.src='https://images.unsplash.com/photo-1578632767115-351597cf2477?auto=format&fit=crop&w=800&q=80'" />
+                    <div class="shade"></div>
+                    <div class="hbody">
+                      <div class="hact">
+                        <a href="<%= heroBannerLink %>" class="watch-btn">
+                          <i class="fa-solid fa-play"></i> Watch now
+                        </a>
+                      </div>
+                    </div>
+                  </article>
+                <% }); %>
+              <% } %>
+            </div>
+            <div class="hdots" id="mobileHeroDots">
+              <% mobHeroVideos.forEach((v, idx) => { %>
+                <i class="<%= idx === 0 ? 'on' : '' %>" data-slide-index="<%= idx %>"></i>
+              <% }); %>
+            </div>
+          </section>
+
+          <!-- 1. Category Chips Bar -->
+          <nav class="chips" aria-label="Categories">
+            <div class="chips-in" id="chips">
+              <a href="/?category=All" class="chip <%= (typeof selectedCategory === 'undefined' || selectedCategory === 'All') ? 'on' : '' %>" aria-pressed="<%= (typeof selectedCategory === 'undefined' || selectedCategory === 'All') %>">All</a>
+              <a href="/?category=Movies" class="chip <%= (typeof selectedCategory !== 'undefined' && selectedCategory === 'Movies') ? 'on' : '' %>" aria-pressed="<%= (typeof selectedCategory !== 'undefined' && selectedCategory === 'Movies') %>">Movies</a>
+              <a href="/?category=Web%20Series" class="chip <%= (typeof selectedCategory !== 'undefined' && selectedCategory === 'Web Series') ? 'on' : '' %>" aria-pressed="<%= (typeof selectedCategory !== 'undefined' && selectedCategory === 'Web Series') %>">Web Series</a>
+              <a href="/?category=Anime" class="chip <%= (typeof selectedCategory !== 'undefined' && selectedCategory === 'Anime') ? 'on' : '' %>" aria-pressed="<%= (typeof selectedCategory !== 'undefined' && selectedCategory === 'Anime') %>">Anime</a>
+              <a href="/?category=TV%20Shows" class="chip <%= (typeof selectedCategory !== 'undefined' && selectedCategory === 'TV Shows') ? 'on' : '' %>" aria-pressed="<%= (typeof selectedCategory !== 'undefined' && selectedCategory === 'TV Shows') %>">TV Shows</a>
+              <a href="/?category=Action" class="chip">Action</a>
+              <a href="/?category=Comedy" class="chip">Comedy</a>
+              <a href="/?category=Sci-Fi" class="chip">Sci-Fi</a>
+              <a href="/?category=Horror" class="chip">Horror</a>
+            </div>
+          </nav>
+
+          <!-- 2. Trending Now Section -->
+          <% 
+            const assignedTrending = (typeof videos !== 'undefined' && videos && videos.length > 0) ? videos.filter(v => 
+              v.homepage_section === 'trending' || 
+              v.section === 'trending' ||
+              (v.homepage_section && v.homepage_section.toLowerCase() === 'trending') ||
+              (v.section && v.section.toLowerCase() === 'trending')
+            ) : [];
+          %>
+          <% if (assignedTrending.length > 0) { %>
+            <section class="sec">
+              <div class="sh">
+                <h2>Trending Now</h2>
+              </div>
+              <div class="scroller">
+                <% assignedTrending.forEach((it, idx) => { %>
+                  <% 
+                    let rankBg = '#e91e63'; // 1: Hot Pink
+                    if (idx === 1) rankBg = '#ff6d00'; // 2: Vibrant Orange
+                    else if (idx === 2) rankBg = '#ffb300'; // 3: Gold Yellow
+                    else if (idx >= 3) rankBg = 'rgba(255, 255, 255, 0.28)'; // 4+: Neutral
+                    const itImg = (it.mobile_image_url && it.mobile_image_url.trim()) ? it.mobile_image_url : it.thumbnail_url;
+                  %>
+                  <a href="/watch/<%= it.id %>" class="tcard-new" aria-label="Number <%= idx + 1 %>, <%= it.title %>">
+                    <div class="tcard-poster-wrap">
+                      <img src="<%= itImg %>" alt="<%= it.title %>" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=400&q=80'" />
+                      <span class="tcard-rank-badge" style="background: <%= rankBg %>;"><%= idx + 1 %></span>
+                    </div>
+                    <div class="tcard-info">
+                      <div class="tcard-title" title="<%= it.title %>"><%= it.title %></div>
+                    </div>
+                  </a>
+                <% }); %>
+              </div>
+            </section>
+          <% } %>
+
+          <!-- 2.5 Dynamic Custom Sections Created by Admin -->
+          <% if (typeof customSectionsList !== 'undefined' && customSectionsList && customSectionsList.length > 0) { %>
+            <% customSectionsList.filter(s => s.section_key !== 'trending' && s.section_key !== 'recommended').forEach(sec => { %>
+              <% 
+                const secKey = sec.section_key;
+                const secVideos = (videos && videos.length > 0) ? videos.filter(v => (v.homepage_section === secKey || v.section === secKey)) : [];
+              %>
+              <% if (secVideos.length > 0) { %>
+                <section class="sec">
+                  <div class="sh">
+                    <h2><%= sec.title %></h2>
+                  </div>
+                  <div class="scroller">
+                    <% secVideos.forEach(v => { 
+                      const vImg = (v.mobile_image_url && v.mobile_image_url.trim()) ? v.mobile_image_url : v.thumbnail_url;
+                    %>
+                      <a href="/watch/<%= v.id %>" class="tcard-new" aria-label="<%= v.title %>">
+                        <div class="tcard-poster-wrap">
+                          <img src="<%= vImg %>" alt="<%= v.title %>" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=400&q=80'" />
+                        </div>
+                        <div class="tcard-info">
+                          <div class="tcard-title" title="<%= v.title %>"><%= v.title %></div>
+                        </div>
+                      </a>
+                    <% }); %>
+                  </div>
+                </section>
+              <% } %>
+            <% }); %>
+          <% } %>
+
+          <!-- 3. Recommended for You Section -->
+          <% 
+            const displayRec = (typeof videos !== 'undefined' && videos && videos.length > 0) ? videos : [];
+          %>
+          <% if (displayRec.length > 0) { %>
+            <section class="sec">
+              <div class="sh">
+                <h2>Recommended for You</h2>
+              </div>
+              <div class="rec-three-grid">
+                <% displayRec.forEach(v => { 
+                  let cardTitle = v.title || 'Untitled';
+                  const vImg = (v.mobile_image_url && v.mobile_image_url.trim()) ? v.mobile_image_url : v.thumbnail_url;
+                %>
+                  <a href="/watch/<%= v.id %>" class="tcard-grid-item" aria-label="<%= cardTitle %>">
+                    <div class="tcard-poster-wrap">
+                      <img src="<%= vImg %>" alt="<%= cardTitle %>" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=400&q=80'" />
+                    </div>
+                    <div class="tcard-info">
+                      <div class="tcard-title" title="<%= cardTitle %>"><%= cardTitle %></div>
+                    </div>
+                  </a>
+                <% }); %>
+              </div>
+            </section>
+          <% } %>
+
+        </div>
+
+        <!-- Desktop Only Recommended Section -->
+        <% 
+          let recVideos = (videos && videos.length > 0) ? videos : [];
+        %>
+        <% if (recVideos.length > 0) { %>
+          <div class="desktop-only-nav" style="margin-top: 28px; margin-bottom: 28px;">
+            <div class="section-title-header">
+              <div class="title-with-icon">
+                <i class="fa-solid fa-star" style="color:var(--que-pink)"></i> 🎬 Recommended Section
+              </div>
+            </div>
+
+            <div class="recommended-grid">
+              <% recVideos.forEach(v => { %>
+                <a href="/watch/<%= v.id %>" class="rec-video-card">
+                  <div class="rec-thumb-wrap">
+                    <img src="<%= v.thumbnail_url %>" alt="<%= v.title %>" />
+                    <% if (v.duration && v.duration.trim() && v.duration !== 'PHOTO') { %>
+                      <span class="duration-tag" style="position:absolute; bottom:6px; right:6px;"><%= v.duration %></span>
+                    <% } %>
+                  </div>
+
+                  <div class="rec-card-body">
+                    <div class="rec-card-title"><%= v.title %></div>
+                    <div class="rec-card-meta-line" style="font-size:0.78rem; color:var(--text-muted); font-weight:600; margin-top:4px;">
+                      <span style="color:var(--que-pink); font-weight:700;"><%= v.category %></span>
+                    </div>
+                  </div>
+                </a>
+              <% }); %>
+            </div>
+          </div>
+        <% } %>
+      </main>
+    </div>
+  </div>
+
+  <!-- Mobile Bottom Dock (< 768px) (Matching User Mobile Design) -->
+  <nav class="dock" id="mobileBottomDock" aria-label="Main">
+    <div class="dk-in">
+      <a href="/" class="dk <%= (typeof selectedCategory === 'undefined' || selectedCategory === 'All') ? 'on' : '' %>" id="dockBtnHome">
+        <i><i class="fa-solid fa-house"></i></i>
+        <span>Home</span>
+      </a>
+      <button type="button" class="dk" id="dockBtnCats" onclick="openCatsModal()">
+        <i><i class="fa-solid fa-border-all"></i></i>
+        <span>Categories</span>
+      </button>
+      <button type="button" class="dk" id="dockBtnMenu" onclick="openDrawerModal()">
+        <i><i class="fa-solid fa-bars"></i></i>
+        <span>Menu</span>
+      </button>
+    </div>
+  </nav>
+
+  <%- include('partials/footer') %>
+
+  <!-- Interactive Category Slider Script & Hero Auto-slideshow -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // 1. Category Bar Dynamic Arrow Visiquety Handler
+      const catGrid = document.getElementById('categoryCardsGrid');
+      const btnScrollLeft = document.getElementById('catScrollLeft');
+      const btnScrollRight = document.getElementById('catScrollRight');
+
+      function updateArrowVisiquety() {
+        if (!catGrid) return;
+        
+        if (catGrid.scrollLeft > 10) {
+          btnScrollLeft.style.display = 'flex';
+        } else {
+          btnScrollLeft.style.display = 'none';
+        }
+
+        const maxScrollLeft = catGrid.scrollWidth - catGrid.clientWidth;
+        if (catGrid.scrollLeft >= maxScrollLeft - 10) {
+          btnScrollRight.style.display = 'none';
+        } else {
+          btnScrollRight.style.display = 'flex';
+        }
+      }
+
+      if (catGrid) {
+        catGrid.addEventListener('scroll', updateArrowVisiquety);
+      }
+
+      if (btnScrollRight) {
+        btnScrollRight.addEventListener('click', () => {
+          catGrid.scrollBy({ left: 240, behavior: 'smooth' });
+          setTimeout(updateArrowVisiquety, 350);
+        });
+      }
+
+      if (btnScrollLeft) {
+        btnScrollLeft.addEventListener('click', () => {
+          catGrid.scrollBy({ left: -240, behavior: 'smooth' });
+          setTimeout(updateArrowVisiquety, 350);
+        });
+      }
+
+      updateArrowVisiquety();
+
+      // 2. Dynamic Hero Banner Auto-Slideshow (Position 1 -> Position 2 -> Position 3 -> Position 4)
+      <%
+        const dynamicSlides = heroPositionVideos.map(v => ({
+          title: v.title,
+          sub: v.description || (v.category + ' • Exclusive HD'),
+          image: v.thumbnail_url,
+          link: '/watch/' + v.id
+        }));
+      %>
+      const heroSlides = <%- JSON.stringify(dynamicSlides.length > 0 ? dynamicSlides : [
+        {
+          title: "QueTue OTT Exclusive",
+          sub: "Watch movies, web series and live streams",
+          image: "https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=1200&q=80",
+          link: "/"
+        }
+      ]) %>;
+
+      let currentHeroIdx = 0;
+      let isAnimating = false;
+      const imgActive = document.getElementById('heroCardImage');
+      const imgIncoming = document.getElementById('heroCardImageNext');
+      const titleEl = document.getElementById('heroCardTitle');
+      const subEl = document.getElementById('heroCardSub');
+      const playBtn = document.getElementById('heroPlayBtn');
+      const dotsGroup = document.getElementById('heroDotsGroup');
+
+      function switchHeroSlide(idx, direction = 'next') {
+        if (!heroSlides.length || isAnimating) return;
+        const targetIdx = (idx + heroSlides.length) % heroSlides.length;
+        if (currentHeroIdx === targetIdx && imgActive.src.includes(heroSlides[targetIdx].image)) return;
+
+        isAnimating = true;
+        currentHeroIdx = targetIdx;
+        const slide = heroSlides[currentHeroIdx];
+        const overlayEl = document.querySelector('.hero-overlay-content');
+
+        if (imgIncoming && imgActive) {
+          imgIncoming.src = slide.image;
+          imgIncoming.style.display = 'block';
+
+          if (direction === 'next') {
+            imgActive.className = 'hero-slide-img pos-center';
+            imgIncoming.className = 'hero-slide-img pos-right';
+            void imgIncoming.offsetWidth;
+            imgActive.className = 'hero-slide-img pos-left';
+            imgIncoming.className = 'hero-slide-img pos-center';
+          } else {
+            imgActive.className = 'hero-slide-img pos-center';
+            imgIncoming.className = 'hero-slide-img pos-left';
+            void imgIncoming.offsetWidth;
+            imgActive.className = 'hero-slide-img pos-right';
+            imgIncoming.className = 'hero-slide-img pos-center';
+          }
+        }
+
+        if (overlayEl) {
+          overlayEl.style.opacity = '0';
+          overlayEl.style.transform = 'translateY(8px)';
+        }
+
+        setTimeout(() => {
+          if (titleEl) {
+            titleEl.textContent = slide.title;
+            titleEl.href = slide.link;
+          }
+          if (subEl) subEl.textContent = slide.sub;
+          if (playBtn) playBtn.href = slide.link;
+
+          if (overlayEl) {
+            overlayEl.style.opacity = '1';
+            overlayEl.style.transform = 'translateY(0)';
+          }
+        }, 160);
+
+        setTimeout(() => {
+          if (imgActive && imgIncoming) {
+            imgActive.src = slide.image;
+            imgActive.className = 'hero-slide-img pos-center';
+            imgIncoming.style.display = 'none';
+            imgIncoming.className = 'hero-slide-img pos-right';
+          }
+
+          const dots = dotsGroup ? dotsGroup.querySelectorAll('.hero-dot-item') : [];
+          dots.forEach((d, i) => {
+            if (i === currentHeroIdx) d.classList.add('active');
+            else d.classList.remove('active');
+          });
+
+          isAnimating = false;
+        }, 440);
+      }
+
+      // Build dynamic dots
+      if (dotsGroup && heroSlides.length > 0) {
+        dotsGroup.innerHTML = '';
+        heroSlides.forEach((_, idx) => {
+          const dot = document.createElement('span');
+          dot.className = `hero-dot-item ${idx === 0 ? 'active' : ''}`;
+          dot.setAttribute('data-idx', idx);
+          dot.addEventListener('click', () => {
+            clearInterval(slideTimer);
+            const dir = idx > currentHeroIdx ? 'next' : 'prev';
+            switchHeroSlide(idx, dir);
+            if (heroSlides.length > 1) {
+              slideTimer = setInterval(() => switchHeroSlide((currentHeroIdx + 1) % heroSlides.length, 'next'), 3500);
+            }
+          });
+          dotsGroup.appendChild(dot);
+        });
+      }
+
+      let slideTimer = setInterval(() => {
+        if (heroSlides.length > 1) {
+          const nextIdx = (currentHeroIdx + 1) % heroSlides.length;
+          switchHeroSlide(nextIdx, 'next');
+        }
+      }, 3500);
+
+      document.getElementById('heroPrevBtn')?.addEventListener('click', (e) => {
+        e.preventDefault();
+        clearInterval(slideTimer);
+        const prevIdx = (currentHeroIdx - 1 + heroSlides.length) % heroSlides.length;
+        switchHeroSlide(prevIdx, 'prev');
+        if (heroSlides.length > 1) {
+          slideTimer = setInterval(() => switchHeroSlide((currentHeroIdx + 1) % heroSlides.length, 'next'), 3500);
+        }
+      });
+
+      document.getElementById('heroNextBtn')?.addEventListener('click', (e) => {
+        e.preventDefault();
+        clearInterval(slideTimer);
+        const nextIdx = (currentHeroIdx + 1) % heroSlides.length;
+        switchHeroSlide(nextIdx, 'next');
+        if (heroSlides.length > 1) {
+          slideTimer = setInterval(() => switchHeroSlide((currentHeroIdx + 1) % heroSlides.length, 'next'), 3500);
+        }
+      });
+
+      // 3. Mobile Touch Swipe Handler (Left/Right Swipe for Hero Card)
+      const heroCardContainer = document.getElementById('queHeroCard');
+      if (heroCardContainer) {
+        let touchStartX = 0;
+        let touchStartY = 0;
+        let touchEndX = 0;
+        let touchEndY = 0;
+
+        heroCardContainer.addEventListener('touchstart', (e) => {
+          if (e.changedTouches && e.changedTouches.length > 0) {
+            touchStartX = e.changedTouches[0].screenX;
+            touchStartY = e.changedTouches[0].screenY;
+          }
+        }, { passive: true });
+
+        heroCardContainer.addEventListener('touchend', (e) => {
+          if (e.changedTouches && e.changedTouches.length > 0) {
+            touchEndX = e.changedTouches[0].screenX;
+            touchEndY = e.changedTouches[0].screenY;
+            handleHeroSwipe();
+          }
+        }, { passive: true });
+
+        function handleHeroSwipe() {
+          const deltaX = touchEndX - touchStartX;
+          const deltaY = touchEndY - touchStartY;
+
+          if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 30) {
+            clearInterval(slideTimer);
+            if (deltaX < 0) {
+              // Swiped Left -> Next Slide (Slides in from Right)
+              const nextIdx = (currentHeroIdx + 1) % heroSlides.length;
+              switchHeroSlide(nextIdx, 'next');
+            } else {
+              // Swiped Right -> Previous Slide (Slides in from Left)
+              const prevIdx = (currentHeroIdx - 1 + heroSlides.length) % heroSlides.length;
+              switchHeroSlide(prevIdx, 'prev');
+            }
+            if (heroSlides.length > 1) {
+              slideTimer = setInterval(() => switchHeroSlide((currentHeroIdx + 1) % heroSlides.length, 'next'), 3500);
+            }
+          }
+        }
+      }
+
+      // Mobile Hero Horizontal Scroll Rail Script
+      const mobileHrail = document.getElementById('hrail');
+      const mobileDotsContainer = document.getElementById('mobileHeroDots');
+      if (mobileHrail && mobileDotsContainer) {
+        const slides = mobileHrail.querySelectorAll('.slide');
+        const dots = mobileDotsContainer.querySelectorAll('i');
+        let currentMobIdx = 0;
+        let mobTimer = null;
+
+        function updateMobileDots(idx) {
+          dots.forEach((dot, i) => {
+            if (i === idx) dot.classList.add('on');
+            else dot.classList.remove('on');
+          });
+        }
+
+        function scrollToMobSlide(idx) {
+          if (!slides.length) return;
+          currentMobIdx = (idx + slides.length) % slides.length;
+          const targetSlide = slides[currentMobIdx];
+          if (targetSlide) {
+            mobileHrail.scrollTo({
+              left: targetSlide.offsetLeft - 12,
+              behavior: 'smooth'
+            });
+            updateMobileDots(currentMobIdx);
+          }
+        }
+
+        function startMobAutoPlay() {
+          if (slides.length <= 1) return;
+          clearInterval(mobTimer);
+          mobTimer = setInterval(() => {
+            scrollToMobSlide(currentMobIdx + 1);
+          }, 3800);
+        }
+
+        dots.forEach((dot, i) => {
+          dot.addEventListener('click', () => {
+            scrollToMobSlide(i);
+            startMobAutoPlay();
+          });
+        });
+
+        let scrollTimeout;
+        mobileHrail.addEventListener('scroll', () => {
+          clearTimeout(scrollTimeout);
+          scrollTimeout = setTimeout(() => {
+            const scrollLeft = mobileHrail.scrollLeft;
+            let closestIdx = 0;
+            let minDiff = Infinity;
+            slides.forEach((slide, i) => {
+              const diff = Math.abs((slide.offsetLeft - 12) - scrollLeft);
+              if (diff < minDiff) {
+                minDiff = diff;
+                closestIdx = i;
+              }
+            });
+            currentMobIdx = closestIdx;
+            updateMobileDots(currentMobIdx);
+          }, 60);
+        }, { passive: true });
+
+        mobileHrail.addEventListener('touchstart', () => clearInterval(mobTimer), { passive: true });
+        mobileHrail.addEventListener('touchend', () => startMobAutoPlay(), { passive: true });
+
+        startMobAutoPlay();
+      }
+    });
+  </script>
+</body>
+</html>

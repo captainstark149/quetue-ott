@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('partials/head') %>
+  <style>
+    .upload-card-box {
+      background: #ffffff;
+      border-radius: 12px;
+      padding: 32px;
+      border: 1px solid #e2e8f0;
+      max-width: 720px;
+      margin: 30px auto;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+    }
+    .upload-section-box {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 14px;
+      margin-bottom: 16px;
+    }
+    .upload-input-field {
+      width: 100%;
+      border-radius: 6px;
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      color: #0f172a;
+      padding: 10px 12px;
+      font-size: 0.9rem;
+      outline: none;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+      box-sizing: border-box;
+    }
+    .upload-input-field:focus {
+      border-color: #00a1d6;
+      box-shadow: 0 0 0 3px rgba(0, 161, 214, 0.12);
+    }
+    .upload-label {
+      display: block;
+      font-weight: 700;
+      font-size: 0.88rem;
+      color: #334155;
+      margin-bottom: 6px;
+    }
+  </style>
+</head>
+<body style="background: #f8fafc; color: #0f172a;">
+
+  <div class="que-content-wrap">
+    <div class="upload-card-box">
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px;">
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <a href="/admin249/dashboard" title="Back to Admin Dashboard" style="display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; background: #f1f5f9; color: #334155; border: 1px solid #cbd5e1; border-radius: 50%; text-decoration: none; font-size: 1rem; transition: background 0.2s ease;">
+            <i class="fa-solid fa-arrow-left"></i>
+          </a>
+          <h2 style="font-size: 1.4rem; font-weight: 800; color: #0f172a; display: flex; align-items: center; gap: 10px; margin: 0;">
+            <i class="fa-solid fa-cloud-arrow-up" style="color: var(--que-pink, #fb7299);"></i> Content Publishing Studio
+          </h2>
+        </div>
+        <span style="background: rgba(0, 161, 214, 0.1); color: #0084b4; border: 1px solid #00a1d6; font-size: 0.75rem; font-weight: 800; padding: 4px 10px; border-radius: 6px;">
+          ADMIN CONTROLLED
+        </span>
+      </div>
+
+      <p style="color: #64748b; font-size: 0.88rem; margin-bottom: 24px;">
+        Upload content posts to the platform catalog. Select an image file or enter a direct image URL.
+      </p>
+
+      <form action="/api/upload" method="POST" enctype="multipart/form-data" id="uploadForm">
+        <!-- 1st Image: Card Thumbnail -->
+        <div class="upload-section-box">
+          <label style="display:block; font-weight:800; font-size:0.9rem; color: #e91e63; margin-bottom:6px;">
+            🖼️ 1st Image: Card Thumbnail (For Homepage & Category Cards)
+          </label>
+          <input type="file" name="thumbnail" accept="image/*" class="upload-input-field" />
+          <input type="text" name="image_url" class="upload-input-field" style="margin-top:8px;" placeholder="OR Enter Direct Thumbnail Image URL..." />
+        </div>
+
+        <!-- 2nd Image: Up Next Sidebar Image -->
+        <div class="upload-section-box">
+          <label style="display:block; font-weight:800; font-size:0.9rem; color: #ff7a38; margin-bottom:6px;">
+            📋 2nd Image: Up Next Sidebar (For Related Section - class="related-section")
+          </label>
+          <input type="file" name="sidebar_image" accept="image/*" class="upload-input-field" />
+          <input type="text" name="sidebar_image_url" class="upload-input-field" style="margin-top:8px;" placeholder="OR Enter Direct Sidebar Image URL..." />
+        </div>
+
+        <!-- 3rd Image: Main Player Image -->
+        <div class="upload-section-box">
+          <label style="display:block; font-weight:800; font-size:0.9rem; color: #0084b4; margin-bottom:6px;">
+            📺 3rd Image: Main Player Display (For Watch Page Player - id="mainVideoPlayer")
+          </label>
+          <input type="file" name="main_image" accept="image/*" class="upload-input-field" />
+          <input type="text" name="main_image_url" class="upload-input-field" style="margin-top:8px;" placeholder="OR Enter Direct Main Player Image URL..." />
+        </div>
+
+        <!-- 4th Image: Mobile Card Thumbnail -->
+        <div class="upload-section-box">
+          <label style="display:block; font-weight:800; font-size:0.9rem; color: #a855f7; margin-bottom:6px;">
+            📱 4th Image: Mobile Card Thumbnail (For Mobile View Cards & Hero Banners)
+          </label>
+          <input type="file" name="mobile_image" accept="image/*" class="upload-input-field" />
+          <input type="text" name="mobile_image_url" class="upload-input-field" style="margin-top:8px;" placeholder="OR Enter Direct Mobile Thumbnail Image URL..." />
+        </div>
+
+
+
+        <!-- Movie / Media Download Link (For DOWNLOAD THIS MOVIE Button) -->
+        <div class="upload-section-box">
+          <label style="display:block; font-weight:800; font-size:0.9rem; color: #059669; margin-bottom:6px;">
+            ⬇️ Movie / Media Download Link (For DOWNLOAD THIS MOVIE Button)
+          </label>
+          <input type="text" name="video_url" class="upload-input-field" placeholder="Enter Direct Video / Movie Download Link (e.g. https://.../movie.mp4 or leave empty for #)..." />
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 18px;">
+          <div>
+            <label class="upload-label" style="color: #0084b4;">🎬 Movie Name (For Sidebar File Info "Name:")</label>
+            <input type="text" name="movie_name" class="upload-input-field" placeholder="e.g. Kalki 2898 AD" />
+          </div>
+          <div>
+            <label class="upload-label" style="color: #e91e63;">📌 Video Title (For watch-video-title heading)</label>
+            <input type="text" name="title" class="upload-input-field" placeholder="e.g. Watch Kalki 2898 AD Full Movie HD Online" required />
+          </div>
+        </div>
+
+        <div style="margin-bottom: 18px;">
+          <label class="upload-label">Description</label>
+          <textarea name="description" class="upload-input-field" style="min-height:100px; resize:vertical;" placeholder="Synopsis, storyline, caption, credits..."></textarea>
+        </div>
+
+        <div style="margin-bottom: 18px;">
+          <label class="upload-label">Category / Type</label>
+          <select name="category" class="upload-input-field">
+            <% (typeof categoriesList !== 'undefined' && categoriesList.length > 0 ? categoriesList : [
+              { name: 'Movie' }, { name: 'TV Series' }, { name: 'Animation' }, { name: 'Documentary' }, { name: 'Game' }, { name: 'Technology Digital' }, { name: 'Gourmet Food' }, { name: 'Variety Show' }, { name: 'Music' }
+            ]).forEach(cat => { %>
+              <option value="<%= cat.name %>"><%= cat.name %></option>
+            <% }); %>
+          </select>
+        </div>
+
+        <div style="margin-bottom: 18px;">
+          <label class="upload-label" style="color: #e91e63;">📝 Title Intro / About Text (Appears right under Watch Page Title)</label>
+          <input type="text" name="short_about" class="upload-input-field" placeholder="e.g. Tasting Sichuan spicy hotpot with international friends / Exclusive Trial Report..." />
+        </div>
+
+        <div style="margin-bottom: 18px;">
+          <label class="upload-label">Card Timer / Duration (Optional, e.g. 03:45 - Leave empty for no timer badge)</label>
+          <input type="text" name="duration" class="upload-input-field" placeholder="e.g. 05:30 (Leave empty if you don't want a timer badge on card)" />
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 18px;">
+          <div>
+            <label class="upload-label">Release Date (Optional)</label>
+            <input type="text" name="release_date" class="upload-input-field" placeholder="e.g. 2026-09-17 or 2026" />
+          </div>
+          <div>
+            <label class="upload-label">Language (Optional)</label>
+            <input type="text" name="language" class="upload-input-field" placeholder="e.g. Hindi + English" />
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 18px;">
+          <div>
+            <label class="upload-label">File Size (Optional)</label>
+            <input type="text" name="size" class="upload-input-field" placeholder="e.g. 450Mb 740Mb 1.1Gb 2.7Gb 5.5Gb" />
+          </div>
+          <div>
+            <label class="upload-label">Movie Quality / Format (Optional)</label>
+            <input type="text" name="quality" class="upload-input-field" placeholder="e.g. PreDvD or 1080p Web-DL" />
+          </div>
+        </div>
+
+        <div style="margin-bottom: 24px;">
+          <label class="upload-label">Bio / Starcast / Tags</label>
+          <input type="text" name="tags" class="upload-input-field" placeholder="Enter Bio, Cast or Tags info..." />
+        </div>
+
+        <button type="submit" class="btn-que-contribute" style="width: 100%; justify-content: center; padding: 14px; font-size: 1rem; border-radius: 8px;">
+          Publish to Platform Catalog <i class="fa-solid fa-rocket"></i>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <%- include('partials/footer') %>
+</body>
+</html>

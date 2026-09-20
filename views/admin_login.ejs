@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('partials/head') %>
+</head>
+<body style="background: #0f0f15; color: #fff;">
+
+  <div class="que-content-wrap" style="display: flex; align-items: center; justify-content: center; min-height: 80vh;">
+    <div style="background: #181920; border: 1px solid #2a2b36; border-radius: 12px; padding: 40px; width: 100%; max-width: 440px; box-shadow: 0 8px 32px rgba(0,0,0,0.5);">
+      <div style="text-align: center; margin-bottom: 28px;">
+        <div style="width: 60px; height: 60px; background: linear-gradient(135deg, #00a1d6, #fb7299); border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 26px; color: #fff; margin-bottom: 12px; box-shadow: 0 4px 14px rgba(251, 114, 153, 0.4);">
+          <i class="fa-solid fa-lock"></i>
+        </div>
+        <h2 style="font-size: 1.6rem; font-weight: 800; margin-bottom: 6px; color: #fff;">Admin Access Portal</h2>
+        <p style="color: #9499a0; font-size: 0.88rem;">Log in as Admin to manage videos & stream broadcasts.</p>
+      </div>
+
+      <% if (error) { %>
+        <div style="background: rgba(255, 77, 79, 0.15); border: 1px solid #ff4d4f; color: #ff7875; padding: 12px; border-radius: 8px; font-size: 0.88rem; margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
+          <i class="fa-solid fa-circle-exclamation"></i>
+          <span><%= error %></span>
+        </div>
+      <% } %>
+
+      <form action="/admin249/login" method="POST">
+        <div style="margin-bottom: 20px;">
+          <label style="display: block; font-size: 0.85rem; font-weight: 700; color: #cbd5e1; margin-bottom: 8px;">Admin Username</label>
+          <div style="position: relative;">
+            <i class="fa-solid fa-user-shield" style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #64748b;"></i>
+            <input type="text" name="username" placeholder="Enter admin username" required style="width: 100%; padding: 12px 14px 12px 42px; background: #0f1015; border: 1px solid #334155; border-radius: 8px; color: #fff; font-size: 0.95rem; outline: none; transition: border 0.2s;" />
+          </div>
+        </div>
+
+        <div style="margin-bottom: 24px;">
+          <label style="display: block; font-size: 0.85rem; font-weight: 700; color: #cbd5e1; margin-bottom: 8px;">Password</label>
+          <div style="position: relative;">
+            <i class="fa-solid fa-key" style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #64748b;"></i>
+            <input type="password" name="password" placeholder="Enter admin password" required style="width: 100%; padding: 12px 14px 12px 42px; background: #0f1015; border: 1px solid #334155; border-radius: 8px; color: #fff; font-size: 0.95rem; outline: none;" />
+          </div>
+        </div>
+
+        <button type="submit" style="width: 100%; padding: 14px; background: linear-gradient(135deg, #00a1d6, #00b5e5); border: none; border-radius: 8px; color: #fff; font-size: 1rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: opacity 0.2s;">
+          Log In as Admin <i class="fa-solid fa-arrow-right"></i>
+        </button>
+      </form>
+
+      <div style="margin-top: 24px; padding-top: 16px; border-top: 1px solid #27272a; text-align: center; font-size: 0.82rem; color: #64748b; display: flex; align-items: center; justify-content: center; gap: 6px;">
+        <i class="fa-solid fa-shield-halved" style="color: #00a1d6;"></i> Protected Admin Portal • Authorized Personnel Only
+      </div>
+    </div>
+  </div>
+
+  <%- include('partials/footer') %>
+</body>
+</html>

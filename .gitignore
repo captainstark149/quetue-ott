@@ -1,0 +1,10 @@
+node_modules/
+*.log
+.DS_Store
+public/uploads/*
+!public/uploads/.gitkeep
+!public/uploads/videos/.gitkeep
+!public/uploads/thumbnails/.gitkeep
+db/*.sqlite
+db/*.sqlite3
+db/quetube.db

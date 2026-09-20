@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('partials/head') %>
+</head>
+<body style="background: #0f0f15; color: #fff;">
+
+  <div class="que-content-wrap">
+    <div style="background: #181920; border-radius: 12px; padding: 32px; border: 1px solid #2a2b36; max-width: 760px; margin: 30px auto; box-shadow: 0 8px 32px rgba(0,0,0,0.4);">
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px;">
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <a href="/admin249/dashboard" title="Back to Admin Dashboard" style="display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; background: rgba(255,255,255,0.1); color: #fff; border-radius: 50%; text-decoration: none; font-size: 1rem; transition: background 0.2s ease;">
+            <i class="fa-solid fa-arrow-left"></i>
+          </a>
+          <h2 style="font-size: 1.4rem; font-weight: 800; color: #fff; display: flex; align-items: center; gap: 10px; margin: 0;">
+            <i class="fa-solid fa-pen-to-square" style="color: #00a1d6;"></i> Edit Content Post
+          </h2>
+        </div>
+        <span style="background: rgba(0, 161, 214, 0.2); color: #00a1d6; border: 1px solid #00a1d6; font-size: 0.75rem; font-weight: 800; padding: 4px 10px; border-radius: 6px;">
+          POST ID: <%= video.id %>
+        </span>
+      </div>
+
+      <p style="color: #9499a0; font-size: 0.88rem; margin-bottom: 24px;">
+        Update post details, change placement positions, update titles, descriptions, or replace media links and images.
+      </p>
+
+      <form action="/admin249/update-video/<%= video.id %>" method="POST" enctype="multipart/form-data" id="editForm">
+        <!-- 1st Image: Card Thumbnail -->
+        <div style="background: #0f1015; border: 1px solid #2a2b36; border-radius: 8px; padding: 14px; margin-bottom: 16px;">
+          <label style="display:block; font-weight:800; font-size:0.9rem; color: var(--que-pink); margin-bottom:6px;">
+            🖼️ 1st Image: Card Thumbnail (For Homepage & Category Cards)
+          </label>
+          <% if (video.thumbnail_url) { %>
+            <div style="display:flex; align-items:center; gap:10px; margin-bottom:8px;">
+              <img src="<%= video.thumbnail_url %>" alt="Current Thumbnail" style="width:70px; height:45px; object-fit:cover; border-radius:6px; border:1px solid #334155;" />
+              <span style="font-size:0.78rem; color:#94a3b8;">Current Thumbnail Loaded</span>
+            </div>
+          <% } %>
+          <input type="file" name="thumbnail" accept="image/*" class="danmaku-input" style="width:100%; border-radius:6px; background: #181920; border-color: #334155; color: #fff;" />
+          <input type="text" name="image_url" value="<%= video.thumbnail_url || '' %>" class="danmaku-input" style="width:100%; margin-top:8px; border-radius:6px; background: #181920; border-color: #334155; color: #fff;" placeholder="OR Enter Direct Thumbnail Image URL..." />
+        </div>
+
+        <!-- 2nd Image: Up Next Sidebar Image -->
+        <div style="background: #0f1015; border: 1px solid #2a2b36; border-radius: 8px; padding: 14px; margin-bottom: 16px;">
+          <label style="display:block; font-weight:800; font-size:0.9rem; color: #ff7a38; margin-bottom:6px;">
+            📋 2nd Image: Up Next Sidebar (For Related Section - class="related-section")
+          </label>
+          <% if (video.sidebar_image_url) { %>
+            <div style="display:flex; align-items:center; gap:10px; margin-bottom:8px;">
+              <img src="<%= video.sidebar_image_url %>" alt="Current Sidebar Image" style="width:70px; height:45px; object-fit:cover; border-radius:6px; border:1px solid #334155;" />
+              <span style="font-size:0.78rem; color:#94a3b8;">Current Sidebar Image Loaded</span>
+            </div>
+          <% } %>
+          <input type="file" name="sidebar_image" accept="image/*" class="danmaku-input" style="width:100%; border-radius:6px; background: #181920; border-color: #334155; color: #fff;" />
+          <input type="text" name="sidebar_image_url" value="<%= video.sidebar_image_url || '' %>" class="danmaku-input" style="width:100%; margin-top:8px; border-radius:6px; background: #181920; border-color: #334155; color: #fff;" placeholder="OR Enter Direct Sidebar Image URL..." />
+        </div>
+
+        <!-- 3rd Image: Main Player Image -->
+        <div style="background: #0f1015; border: 1px solid #2a2b36; border-radius: 8px; padding: 14px; margin-bottom: 16px;">
+          <label style="display:block; font-weight:800; font-size:0.9rem; color: #00a1d6; margin-bottom:6px;">
+            📺 3rd Image: Main Player Display (For Watch Page Player - id="mainVideoPlayer")
+          </label>
+          <% if (video.main_image_url) { %>
+            <div style="display:flex; align-items:center; gap:10px; margin-bottom:8px;">
+              <img src="<%= video.main_image_url %>" alt="Current Main Image" style="width:70px; height:45px; object-fit:cover; border-radius:6px; border:1px solid #334155;" />
+              <span style="font-size:0.78rem; color:#94a3b8;">Current Main Player Image Loaded</span>
+            </div>
+          <% } %>
+          <input type="file" name="main_image" accept="image/*" class="danmaku-input" style="width:100%; border-radius:6px; background: #181920; border-color: #334155; color: #fff;" />
+          <input type="text" name="main_image_url" value="<%= video.main_image_url || '' %>" class="danmaku-input" style="width:100%; margin-top:8px; border-radius:6px; background: #181920; border-color: #334155; color: #fff;" placeholder="OR Enter Direct Main Player Image URL..." />
+        </div>
+
+        <!-- 4th Image: Mobile Card Thumbnail -->
+        <div style="background: #0f1015; border: 1px solid #2a2b36; border-radius: 8px; padding: 14px; margin-bottom: 20px;">
+          <label style="display:block; font-weight:800; font-size:0.9rem; color: #a855f7; margin-bottom:6px;">
+            📱 4th Image: Mobile Card Thumbnail (For Mobile View Cards & Hero Banners)
+          </label>
+          <% if (video.mobile_image_url) { %>
+            <div style="display:flex; align-items:center; gap:10px; margin-bottom:8px;">
+              <img src="<%= video.mobile_image_url %>" alt="Current Mobile Image" style="width:70px; height:45px; object-fit:cover; border-radius:6px; border:1px solid #334155;" />
+              <span style="font-size:0.78rem; color:#94a3b8;">Current Mobile Thumbnail Loaded</span>
+            </div>
+          <% } %>
+          <input type="file" name="mobile_image" accept="image/*" class="danmaku-input" style="width:100%; border-radius:6px; background: #181920; border-color: #334155; color: #fff;" />
+          <input type="text" name="mobile_image_url" value="<%= video.mobile_image_url || '' %>" class="danmaku-input" style="width:100%; margin-top:8px; border-radius:6px; background: #181920; border-color: #334155; color: #fff;" placeholder="OR Enter Direct Mobile Thumbnail Image URL..." />
+        </div>
+
+        <!-- Movie / Media Download Link -->
+        <div style="background: #0f1015; border: 1px solid #2a2b36; border-radius: 8px; padding: 14px; margin-bottom: 20px;">
+          <label style="display:block; font-weight:800; font-size:0.9rem; color: #387b00; margin-bottom:6px;">
+            ⬇️ Movie / Media Download Link (For DOWNLOAD THIS MOVIE Button)
+          </label>
+          <input type="text" name="video_url" value="<%= video.video_url || '' %>" class="danmaku-input" style="width:100%; border-radius:6px; background: #181920; border-color: #334155; color: #fff;" placeholder="Enter Direct Video / Movie Download Link..." />
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 18px;">
+          <div>
+            <label style="display:block; font-weight:700; font-size:0.88rem; color: #00a1d6; margin-bottom:6px;">🎬 Movie Name (For Sidebar File Info "Name:")</label>
+            <input type="text" name="movie_name" value="<%= video.movie_name || '' %>" class="danmaku-input" style="width:100%; border-radius:6px; background: #0f1015; border-color: #334155; color: #fff;" placeholder="e.g. Kalki 2898 AD" />
+          </div>
+          <div>
+            <label style="display:block; font-weight:700; font-size:0.88rem; color: var(--que-pink); margin-bottom:6px;">📌 Video Title (For watch-video-title heading)</label>
+            <input type="text" name="title" value="<%= video.title || '' %>" class="danmaku-input" style="width:100%; border-radius:6px; background: #0f1015; border-color: #334155; color: #fff;" placeholder="e.g. Watch Kalki 2898 AD Full Movie HD Online" required />
+          </div>
+        </div>
+
+        <div style="margin-bottom: 18px;">
+          <label style="display:block; font-weight:700; font-size:0.88rem; color: #cbd5e1; margin-bottom:6px;">Description</label>
+          <textarea name="description" class="danmaku-input" style="width:100%; border-radius:6px; min-height:100px; resize:vertical; background: #0f1015; border-color: #334155; color: #fff;" placeholder="Synopsis, storyline, caption, credits..."><%= video.description || '' %></textarea>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-bottom: 18px;">
+          <div>
+            <label style="display:block; font-weight:700; font-size:0.88rem; color: #cbd5e1; margin-bottom:6px;">Category / Type</label>
+            <select name="category" class="que-input" style="width:100%; border-radius:6px; background: #0f1015; border-color: #334155; color: #fff;">
+              <% const curCat = video.category || 'Movie'; %>
+              <% (typeof categoriesList !== 'undefined' && categoriesList.length > 0 ? categoriesList : [
+                { name: 'Movie' }, { name: 'TV Series' }, { name: 'Animation' }, { name: 'Documentary' }, { name: 'Game' }, { name: 'Technology Digital' }, { name: 'Gourmet Food' }, { name: 'Variety Show' }, { name: 'Music' }
+              ]).forEach(cat => { %>
+                <option value="<%= cat.name %>" <%= (curCat === cat.name || curCat === cat.slug) ? 'selected' : '' %>><%= cat.name %></option>
+              <% }); %>
+            </select>
+          </div>
+
+          <div>
+            <label style="display:block; font-weight:700; font-size:0.88rem; color: #cbd5e1; margin-bottom:6px;">1st Homepage Placement</label>
+            <select name="homepage_section" class="danmaku-input" style="width:100%; border-radius:6px; background: #0f1015; border-color: #334155; color: #fff;">
+              <% const curHP = video.homepage_section || 'none'; %>
+              <option value="none" <%= (!curHP || curHP === 'none') ? 'selected' : '' %>>Unassigned (None)</option>
+              <option value="hero_main" <%= curHP === 'hero_main' ? 'selected' : '' %> <%= (typeof occupiedHP !== 'undefined' && occupiedHP.hero_main && occupiedHP.hero_main.id !== video.id) ? 'disabled' : '' %>>
+                Position 1 (Hero Main) <%= (typeof occupiedHP !== 'undefined' && occupiedHP.hero_main && occupiedHP.hero_main.id !== video.id) ? '🔒 (Taken)' : '' %>
+              </option>
+              <option value="position2" <%= curHP === 'position2' ? 'selected' : '' %> <%= (typeof occupiedHP !== 'undefined' && occupiedHP.position2 && occupiedHP.position2.id !== video.id) ? 'disabled' : '' %>>
+                Position 2 <%= (typeof occupiedHP !== 'undefined' && occupiedHP.position2 && occupiedHP.position2.id !== video.id) ? '🔒 (Taken)' : '' %>
+              </option>
+              <option value="position3" <%= (curHP === 'position3' || curHP === 'general') ? 'selected' : '' %> <%= (typeof occupiedHP !== 'undefined' && occupiedHP.position3 && occupiedHP.position3.id !== video.id) ? 'disabled' : '' %>>
+                Position 3 <%= (typeof occupiedHP !== 'undefined' && occupiedHP.position3 && occupiedHP.position3.id !== video.id) ? '🔒 (Taken)' : '' %>
+              </option>
+              <option value="position4" <%= curHP === 'position4' ? 'selected' : '' %> <%= (typeof occupiedHP !== 'undefined' && occupiedHP.position4 && occupiedHP.position4.id !== video.id) ? 'disabled' : '' %>>
+                Position 4 <%= (typeof occupiedHP !== 'undefined' && occupiedHP.position4 && occupiedHP.position4.id !== video.id) ? '🔒 (Taken)' : '' %>
+              </option>
+            </select>
+          </div>
+
+          <div>
+            <label style="display:block; font-weight:700; font-size:0.88rem; color: #cbd5e1; margin-bottom:6px;">2nd top-2x2-grid Placement</label>
+            <select name="grid_position" class="danmaku-input" style="width:100%; border-radius:6px; background: #0f1015; border-color: #334155; color: #fff;">
+              <% const curGrid = video.grid_position || 'none'; %>
+              <option value="none" <%= (!curGrid || curGrid === 'none') ? 'selected' : '' %>>Unassigned (None)</option>
+              <option value="hero_grid" <%= (curGrid === 'hero_grid' || curGrid === 'grid_1') ? 'selected' : '' %> <%= (typeof occupiedGrid !== 'undefined' && occupiedGrid.hero_grid && occupiedGrid.hero_grid.id !== video.id) ? 'disabled' : '' %>>
+                Card 1 (Top Left) <%= (typeof occupiedGrid !== 'undefined' && occupiedGrid.hero_grid && occupiedGrid.hero_grid.id !== video.id) ? '🔒 (Taken)' : '' %>
+              </option>
+              <option value="grid_2" <%= curGrid === 'grid_2' ? 'selected' : '' %> <%= (typeof occupiedGrid !== 'undefined' && occupiedGrid.grid_2 && occupiedGrid.grid_2.id !== video.id) ? 'disabled' : '' %>>
+                Card 2 (Top Right) <%= (typeof occupiedGrid !== 'undefined' && occupiedGrid.grid_2 && occupiedGrid.grid_2.id !== video.id) ? '🔒 (Taken)' : '' %>
+              </option>
+              <option value="grid_3" <%= curGrid === 'grid_3' ? 'selected' : '' %> <%= (typeof occupiedGrid !== 'undefined' && occupiedGrid.grid_3 && occupiedGrid.grid_3.id !== video.id) ? 'disabled' : '' %>>
+                Card 3 (Bottom Left) <%= (typeof occupiedGrid !== 'undefined' && occupiedGrid.grid_3 && occupiedGrid.grid_3.id !== video.id) ? '🔒 (Taken)' : '' %>
+              </option>
+              <option value="grid_4" <%= curGrid === 'grid_4' ? 'selected' : '' %> <%= (typeof occupiedGrid !== 'undefined' && occupiedGrid.grid_4 && occupiedGrid.grid_4.id !== video.id) ? 'disabled' : '' %>>
+                Card 4 (Bottom Right) <%= (typeof occupiedGrid !== 'undefined' && occupiedGrid.grid_4 && occupiedGrid.grid_4.id !== video.id) ? '🔒 (Taken)' : '' %>
+              </option>
+            </select>
+          </div>
+        </div>
+
+        <div style="margin-bottom: 18px;">
+          <label style="display:block; font-weight:700; font-size:0.88rem; color: var(--que-pink); margin-bottom:6px;">📝 Title Intro / About Text (Appears right under Watch Page Title)</label>
+          <input type="text" name="short_about" value="<%= video.short_about || '' %>" class="danmaku-input" style="width:100%; border-radius:6px; background: #0f1015; border-color: #334155; color: #fff;" placeholder="e.g. Tasting Sichuan spicy hotpot with international friends..." />
+        </div>
+
+        <div style="margin-bottom: 18px;">
+          <label style="display:block; font-weight:700; font-size:0.88rem; color: #cbd5e1; margin-bottom:6px;">Card Timer / Duration (Optional, e.g. 03:45 - Leave empty for no timer badge)</label>
+          <input type="text" name="duration" value="<%= video.duration || '' %>" class="danmaku-input" style="width:100%; border-radius:6px; background: #0f1015; border-color: #334155; color: #fff;" placeholder="e.g. 05:30" />
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 18px;">
+          <div>
+            <label style="display:block; font-weight:700; font-size:0.88rem; color: #cbd5e1; margin-bottom:6px;">Release Date (Optional)</label>
+            <input type="text" name="release_date" value="<%= video.release_date || '' %>" class="danmaku-input" style="width:100%; border-radius:6px; background: #0f1015; border-color: #334155; color: #fff;" placeholder="e.g. 2026-09-17 or 2026" />
+          </div>
+          <div>
+            <label style="display:block; font-weight:700; font-size:0.88rem; color: #cbd5e1; margin-bottom:6px;">Language (Optional)</label>
+            <input type="text" name="language" value="<%= video.language || '' %>" class="danmaku-input" style="width:100%; border-radius:6px; background: #0f1015; border-color: #334155; color: #fff;" placeholder="e.g. Hindi + English" />
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 18px;">
+          <div>
+            <label style="display:block; font-weight:700; font-size:0.88rem; color: #cbd5e1; margin-bottom:6px;">File Size (Optional)</label>
+            <input type="text" name="size" value="<%= video.size || '' %>" class="danmaku-input" style="width:100%; border-radius:6px; background: #0f1015; border-color: #334155; color: #fff;" placeholder="e.g. 450Mb 740Mb 1.1Gb 2.7Gb 5.5Gb" />
+          </div>
+          <div>
+            <label style="display:block; font-weight:700; font-size:0.88rem; color: #cbd5e1; margin-bottom:6px;">Movie Quality / Format (Optional)</label>
+            <input type="text" name="quality" value="<%= video.quality || '' %>" class="danmaku-input" style="width:100%; border-radius:6px; background: #0f1015; border-color: #334155; color: #fff;" placeholder="e.g. PreDvD or 1080p Web-DL" />
+          </div>
+        </div>
+
+        <div style="margin-bottom: 24px;">
+          <label style="display:block; font-weight:700; font-size:0.88rem; color: #cbd5e1; margin-bottom:6px;">Bio / Starcast / Tags</label>
+          <input type="text" name="tags" value="<%= video.tags || '' %>" class="danmaku-input" style="width:100%; border-radius:6px; background: #0f1015; border-color: #334155; color: #fff;" placeholder="Enter Bio, Cast or Tags info..." />
+        </div>
+
+        <button type="submit" class="btn-que-contribute" id="saveEditBtn" style="width: 100%; justify-content: center; padding: 14px; font-size: 1rem; border-radius: 8px; background: #00a1d6; color: #fff; cursor: pointer;">
+          Save Changes & Update Post <i class="fa-solid fa-check-double"></i>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const editForm = document.getElementById('editForm');
+      if (editForm) {
+        editForm.addEventListener('submit', () => {
+          const btn = document.getElementById('saveEditBtn');
+          if (btn) {
+            btn.innerHTML = 'Saving & Updating... <i class="fa-solid fa-spinner fa-spin"></i>';
+          }
+        });
+      }
+    });
+  </script>
+
+  <%- include('partials/footer') %>
+</body>
+</html>

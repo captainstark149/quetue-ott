@@ -1,0 +1,594 @@
+<!-- Desktop Navbar (Desktop Only) -->
+<header class="que-navbar desktop-only-nav">
+  <% const isWatch = (typeof isWatchPage !== 'undefined' && isWatchPage) || (typeof currentPath !== 'undefined' && currentPath.startsWith('/watch')); %>
+  <% const isUpload = (typeof isUploadPage !== 'undefined' && isUploadPage) || (typeof currentPath !== 'undefined' && currentPath === '/upload'); %>
+  <% const isSearch = (typeof isSearchPage !== 'undefined' && isSearchPage) || (typeof currentPath !== 'undefined' && currentPath.startsWith('/search')); %>
+
+  <div class="que-nav-left">
+    <% if (isSearch || isWatch || isUpload) { %>
+      <button class="que-menu-toggle back-btn-nav" onclick="goBackOrHome()" title="Go Back" aria-label="Go Back">
+        <i class="fa-solid fa-arrow-left"></i>
+      </button>
+    <% } else { %>
+      <button class="que-menu-toggle" id="queMenuToggle" onclick="toggleQueSidebar()" title="Toggle Left Sidebar">
+        <i class="fa-solid fa-bars"></i>
+      </button>
+    <% } %>
+
+    <% if (!isUpload) { %>
+      <a href="/" class="que-logo <%= isWatch ? 'watch-page-logo' : '' %>">
+        <div class="que-tv-icon">
+          <i class="fa-solid fa-film"></i>
+        </div>
+        <span class="que-logo-text">QueTue</span>
+      </a>
+    <% } %>
+  </div>
+
+  <% if (!isWatch) { %>
+    <div class="que-search-box">
+      <form action="/search" method="GET" class="que-search-form">
+        <input type="text" name="q" class="que-search-input" placeholder="Search Movies, Web Series, Shows, Anime..." value="<%= isSearch ? (typeof query !== 'undefined' ? query : '') : '' %>" autocomplete="off" required />
+        <button type="button" class="que-search-clear-btn" id="queSearchClearDesktop" title="Clear Text" style="display: none;">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+        <button type="submit" class="que-search-btn" title="Search">
+          <i class="fa-solid fa-magnifying-glass"></i>
+        </button>
+      </form>
+    </div>
+  <% } %>
+</header>
+
+<!-- Mobile OTT App Header (< 768px) -->
+<div class="mobile-hdr-wrapper mobile-only-nav">
+  <header class="hdr" id="hdr" style="padding: 0 10px;">
+    <% if (isSearch) { %>
+      <div style="display:flex; align-items:center; gap:8px; width:100%;">
+        <a href="/" class="ib" aria-label="Go Back to Home" title="Go Back to Home" style="flex-shrink:0;">
+          <i class="fa-solid fa-arrow-left"></i>
+        </a>
+        <form action="/search" method="GET" class="sf" style="margin:0; flex:1; width:100%;">
+          <button type="submit" style="background:none; border:none; padding:0; margin:0; color:var(--muted); font-size:0.9rem; cursor:pointer;" aria-label="Submit Search">
+            <i class="fa-solid fa-magnifying-glass"></i>
+          </button>
+          <input name="q" class="mobile-hdr-input" type="search" placeholder="Search movies, series, anime" autocomplete="off" value="<%= typeof query !== 'undefined' ? query : '' %>" required />
+          <button type="button" class="que-search-clear-btn" id="queSearchClearMobile" title="Clear Text" style="display: none;">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </form>
+      </div>
+    <% } else if (isWatch) { %>
+      <div style="display:flex; align-items:center; justify-content:space-between; width:100%;">
+        <button class="ib" onclick="goBackOrHome()" aria-label="Go Back" title="Go Back">
+          <i class="fa-solid fa-arrow-left"></i>
+        </button>
+      </div>
+    <% } else { %>
+      <div class="logo" aria-label="QueTue OTT" style="display:flex; align-items:center; gap:6px;">
+        <a href="/" style="display:flex; align-items:center; gap:8px; text-decoration:none; color:inherit;">
+          <span class="lm">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="#fff" aria-hidden="true"><path d="M8 5.2v13.6a.8.8 0 0 0 1.2.7l11-6.8a.8.8 0 0 0 0-1.4l-11-6.8A.8.8 0 0 0 8 5.2z"/></svg>
+          </span>
+          <span class="lw">QueTue</span>
+          <span class="lo">OTT</span>
+        </a>
+      </div>
+      <div style="display:flex; align-items:center; gap:4px;">
+        <button class="ib" onclick="openCatsModal()" aria-label="Categories" title="Categories">
+          <i class="fa-solid fa-border-all"></i>
+        </button>
+        <a href="/search" class="ib" aria-label="Search" title="Search">
+          <i class="fa-solid fa-magnifying-glass"></i>
+        </a>
+        <button class="ib" onclick="openDrawerModal()" aria-label="Menu" title="Menu">
+          <i class="fa-solid fa-bars"></i>
+        </button>
+      </div>
+    <% } %>
+  </header>
+</div>
+
+<!-- Mobile Search Modal Overlay (< 768px) -->
+<div class="ov" id="ov-search" role="dialog" aria-label="Search">
+  <div class="ov-in">
+    <div class="ov-h">
+      <button class="ib" onclick="closeSearchModal()" aria-label="Back">
+        <i class="fa-solid fa-chevron-left"></i>
+      </button>
+      <form action="/search" method="GET" class="sf" style="margin:0; width:100%;">
+        <button type="submit" style="background:none; border:none; padding:0; margin:0; color:var(--muted); font-size:0.95rem; cursor:pointer;" aria-label="Submit Search">
+          <i class="fa-solid fa-magnifying-glass"></i>
+        </button>
+        <input name="q" class="modal-search-input" type="search" placeholder="Search movies, series, anime" autocomplete="off" value="<%= isSearch ? (typeof query !== 'undefined' ? query : '') : '' %>" required />
+        <button type="button" class="que-search-clear-btn" id="queSearchClearModal" title="Clear Text" style="display: none;">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </form>
+    </div>
+    <div class="ov-b" id="sbody">
+      <% 
+        const realVideos = (typeof dbVideosList !== 'undefined' && dbVideosList && dbVideosList.length > 0) 
+          ? dbVideosList 
+          : ((typeof videos !== 'undefined' && videos && videos.length > 0) ? videos : []);
+      %>
+      <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; padding: 0 2px;">
+        <h4 class="sub" style="margin:0; font-size:0.95rem; font-weight:800; display:flex; align-items:center; gap:6px;">
+          <i class="fa-solid fa-fire" style="color:var(--que-pink);"></i> Uploaded Content
+        </h4>
+        <span style="font-size:0.75rem; color:var(--text-muted); font-weight:600;"><%= realVideos.length %> Videos</span>
+      </div>
+
+      <div class="search-popular-list" id="searchPopularGrid">
+        <% if (realVideos && realVideos.length > 0) { %>
+          <% realVideos.forEach(v => { %>
+            <a href="/watch/<%= v.id %>" class="search-item-row" aria-label="<%= v.title %>">
+              <div class="search-item-thumb">
+                <img src="<%= v.thumbnail_url || 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=400&q=80' %>" alt="<%= v.title %>" onerror="this.src='https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=400&q=80'" />
+                <% if (v.duration) { %>
+                  <span class="search-thumb-duration"><%= v.duration %></span>
+                <% } %>
+              </div>
+              <div class="search-item-info">
+                <div class="search-item-title"><%= v.title %></div>
+                <div class="search-item-meta">
+                  <span class="search-meta-cat"><%= v.category || 'Movie' %></span>
+                </div>
+              </div>
+            </a>
+          <% }); %>
+        <% } else { %>
+          <p style="color: var(--text-muted); font-size: 0.88rem; margin: 16px 0; text-align: center;">No content uploaded yet.</p>
+        <% } %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Mobile Categories Modal Overlay (< 768px) -->
+<div class="ov" id="ov-cats" role="dialog" aria-label="Categories">
+  <div class="ov-in">
+    <div class="ov-h">
+      <button class="ib" onclick="closeCatsModal()" aria-label="Back">
+        <i class="fa-solid fa-chevron-left"></i>
+      </button>
+      <h3>Categories</h3>
+    </div>
+    <div class="ov-b" id="cbody">
+      <div class="cats">
+        <% 
+          const dynamicCats = (typeof categoriesList !== 'undefined' && categoriesList && categoriesList.length > 0) ? categoriesList : [
+            { name: 'Movies', slug: 'Movies' },
+            { name: 'Web Series', slug: 'Web Series' },
+            { name: 'Anime', slug: 'Anime' },
+            { name: 'TV Shows', slug: 'TV Shows' },
+            { name: 'Action', slug: 'Action' },
+            { name: 'Sci-Fi', slug: 'Sci-Fi' }
+          ];
+        %>
+        <% dynamicCats.forEach(c => { %>
+          <a href="/?category=<%= encodeURIComponent(c.slug || c.name) %>" class="cat">
+            <div class="cn"><b><%= c.name %></b><small>Browse All</small></div>
+          </a>
+        <% }); %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Mobile Drawer Modal (< 768px) -->
+<div class="dw" id="dw">
+  <div class="dscrim" onclick="closeDrawerModal()"></div>
+  <aside class="drawer" role="dialog" aria-modal="true" aria-label="Menu">
+    <div class="dh">
+      <div class="logo">
+        <span class="lm"><svg viewBox="0 0 24 24" width="16" height="16" fill="#fff"><path d="M8 5.2v13.6a.8.8 0 0 0 1.2.7l11-6.8a.8.8 0 0 0 0-1.4l-11-6.8A.8.8 0 0 0 8 5.2z"/></svg></span>
+        <span class="lw">QueTue</span><span class="lo">OTT</span>
+      </div>
+      <button class="ib" onclick="closeDrawerModal()" aria-label="Close menu"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <nav class="dn" id="dnav">
+      <a href="/?category=All" class="dl <%= (typeof selectedCategory === 'undefined' || selectedCategory === 'All') ? 'on' : '' %>">
+        <i class="fa-solid fa-house"></i> Home
+      </a>
+      <a href="/?category=Movies" class="dl <%= (typeof selectedCategory !== 'undefined' && selectedCategory === 'Movies') ? 'on' : '' %>">
+        <i class="fa-solid fa-film"></i> Movies
+      </a>
+      <a href="/?category=Web%20Series" class="dl <%= (typeof selectedCategory !== 'undefined' && selectedCategory === 'Web Series') ? 'on' : '' %>">
+        <i class="fa-solid fa-tv"></i> Web Series
+      </a>
+      <a href="/?category=Anime" class="dl <%= (typeof selectedCategory !== 'undefined' && selectedCategory === 'Anime') ? 'on' : '' %>">
+        <i class="fa-solid fa-masks-theater"></i> Anime
+      </a>
+      <a href="/?category=TV%20Shows" class="dl <%= (typeof selectedCategory !== 'undefined' && selectedCategory === 'TV Shows') ? 'on' : '' %>">
+        <i class="fa-solid fa-display"></i> TV Shows
+      </a>
+      <button type="button" onclick="closeDrawerModal(); openCatsModal();" class="dl">
+        <i class="fa-solid fa-border-all"></i> Categories
+      </button>
+    </nav>
+    <div class="dsec">
+      <h4>Appearance</h4>
+      <div class="seg" id="seg">
+        <button type="button" onclick="setAppTheme('light')" id="btnThemeLight">Light</button>
+        <button type="button" onclick="setAppTheme('dark')" id="btnThemeDark">Dark</button>
+        <button type="button" onclick="setAppTheme('auto')" id="btnThemeAuto">Auto</button>
+      </div>
+    </div>
+  </aside>
+</div>
+
+<script>
+  function syncDockState(activeName) {
+    const dockHome = document.getElementById('dockBtnHome');
+    const dockCats = document.getElementById('dockBtnCats');
+    const dockSearch = document.getElementById('dockBtnSearch');
+    const dockMenu = document.getElementById('dockBtnMenu');
+
+    [dockHome, dockCats, dockSearch, dockMenu].forEach(btn => {
+      if (btn) btn.classList.remove('on', 'active');
+    });
+
+    if (activeName === 'cats' && dockCats) dockCats.classList.add('on', 'active');
+    else if (activeName === 'search' && dockSearch) dockSearch.classList.add('on', 'active');
+    else if (activeName === 'menu' && dockMenu) dockMenu.classList.add('on', 'active');
+    else if (activeName === 'home' && dockHome) dockHome.classList.add('on', 'active');
+  }
+
+  function lockBodyScroll() {
+    document.documentElement.classList.add('modal-open');
+    document.body.classList.add('modal-open');
+  }
+
+  function unlockBodyScroll() {
+    const hasOpenOverlay = document.querySelector('.ov.open, .dw.open');
+    if (!hasOpenOverlay) {
+      document.documentElement.classList.remove('modal-open');
+      document.body.classList.remove('modal-open');
+    }
+  }
+
+  function openSearchModal() {
+    closeCatsModal(true);
+    closeDrawerModal(true);
+    const ov = document.getElementById('ov-search');
+    if (ov) {
+      ov.classList.add('open');
+      lockBodyScroll();
+      syncDockState('search');
+      const input = ov.querySelector('.modal-search-input');
+      if (input) {
+        setTimeout(() => {
+          input.focus();
+          if (typeof updateAllSearchClearBtns === 'function') updateAllSearchClearBtns();
+        }, 150);
+      }
+    } else {
+      window.location.href = '/search';
+    }
+  }
+
+  function closeSearchModal(skipDockSync) {
+    const ov = document.getElementById('ov-search');
+    if (ov) {
+      ov.classList.remove('open');
+      unlockBodyScroll();
+      if (!skipDockSync) syncDockState('home');
+    }
+  }
+
+  function openCatsModal() {
+    closeSearchModal(true);
+    closeDrawerModal(true);
+    const ov = document.getElementById('ov-cats');
+    if (ov) {
+      ov.classList.add('open');
+      lockBodyScroll();
+      syncDockState('cats');
+    }
+  }
+
+  function closeCatsModal(skipDockSync) {
+    const ov = document.getElementById('ov-cats');
+    if (ov) {
+      ov.classList.remove('open');
+      unlockBodyScroll();
+      if (!skipDockSync) syncDockState('home');
+    }
+  }
+
+  function openDrawerModal() {
+    closeSearchModal(true);
+    closeCatsModal(true);
+    const dw = document.getElementById('dw');
+    if (dw) {
+      dw.classList.add('open');
+      lockBodyScroll();
+      syncThemeUI();
+      syncDockState('menu');
+    }
+  }
+
+  function closeDrawerModal(skipDockSync) {
+    const dw = document.getElementById('dw');
+    if (dw) {
+      dw.classList.remove('open');
+      unlockBodyScroll();
+      if (!skipDockSync) syncDockState('home');
+    }
+  }
+
+  function setAppTheme(mode) {
+    localStorage.setItem('quetube_theme', mode);
+    localStorage.setItem('queTheme', mode);
+
+    let activeTheme = mode;
+    if (mode === 'auto') {
+      const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+      activeTheme = prefersDark ? 'dark' : 'light';
+    }
+
+    if (activeTheme === 'dark') {
+      document.documentElement.setAttribute('data-theme', 'dark');
+      document.documentElement.classList.add('dark-mode');
+      document.body.classList.add('dark-mode');
+    } else {
+      document.documentElement.setAttribute('data-theme', 'light');
+      document.documentElement.classList.remove('dark-mode');
+      document.body.classList.remove('dark-mode');
+    }
+
+    syncThemeUI();
+    if (typeof window.syncSidebarThemeUI === 'function') {
+      window.syncSidebarThemeUI(activeTheme);
+    }
+  }
+
+  function syncThemeUI() {
+    const currentMode = localStorage.getItem('quetube_theme') || 'dark';
+    const btnLight = document.getElementById('btnThemeLight');
+    const btnDark = document.getElementById('btnThemeDark');
+    const btnAuto = document.getElementById('btnThemeAuto');
+
+    [btnLight, btnDark, btnAuto].forEach(btn => {
+      if (btn) btn.classList.remove('on', 'active');
+    });
+
+    if (currentMode === 'light' && btnLight) btnLight.classList.add('on', 'active');
+    else if (currentMode === 'dark' && btnDark) btnDark.classList.add('on', 'active');
+    else if (currentMode === 'auto' && btnAuto) btnAuto.classList.add('on', 'active');
+  }
+
+  function updateAllSearchClearBtns() {
+    const inputs = document.querySelectorAll('input[name="q"], .que-search-input, .mobile-hdr-input, .modal-search-input');
+    inputs.forEach(inp => {
+      const form = inp.closest('form');
+      if (form) {
+        const clearBtn = form.querySelector('.que-search-clear-btn');
+        if (clearBtn) {
+          clearBtn.style.display = (inp.value && inp.value.trim().length > 0) ? 'inline-flex' : 'none';
+        }
+      }
+    });
+  }
+
+  function initSearchClearButtons() {
+    const inputs = document.querySelectorAll('input[name="q"], .que-search-input, .mobile-hdr-input, .modal-search-input');
+    inputs.forEach(inp => {
+      const form = inp.closest('form');
+      if (!form) return;
+      const clearBtn = form.querySelector('.que-search-clear-btn');
+      if (!clearBtn) return;
+
+      const toggle = () => {
+        if (inp.value && inp.value.trim().length > 0) {
+          clearBtn.style.display = 'inline-flex';
+        } else {
+          clearBtn.style.display = 'none';
+        }
+      };
+
+      inp.addEventListener('input', toggle);
+      inp.addEventListener('keyup', toggle);
+
+      clearBtn.onclick = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        inp.value = '';
+        toggle();
+        inp.focus();
+      };
+
+      toggle();
+    });
+  }
+
+  function initLiveSearchFiltering() {
+    const modalInput = document.querySelector('.modal-search-input');
+    const popularGrid = document.getElementById('searchPopularGrid');
+    if (!modalInput || !popularGrid) return;
+
+    const filterHandler = () => {
+      const val = modalInput.value.trim().toLowerCase();
+      const rows = popularGrid.querySelectorAll('.search-item-row');
+      const tokens = val.split(/\s+/).filter(Boolean);
+
+      let visibleCount = 0;
+      rows.forEach(row => {
+        if (tokens.length === 0) {
+          row.style.display = '';
+          visibleCount++;
+        } else {
+          const text = row.textContent.toLowerCase();
+          const matches = tokens.every(tok => text.includes(tok));
+          row.style.display = matches ? '' : 'none';
+          if (matches) visibleCount++;
+        }
+      });
+
+      let noMatchMsg = popularGrid.querySelector('.no-search-live-matches');
+      if (visibleCount === 0 && tokens.length > 0) {
+        if (!noMatchMsg) {
+          noMatchMsg = document.createElement('div');
+          noMatchMsg.className = 'no-search-live-matches';
+          noMatchMsg.style.cssText = 'padding: 24px; text-align: center; color: var(--text-muted); font-size: 0.9rem; font-weight: 600;';
+          noMatchMsg.innerHTML = '<i class="fa-solid fa-magnifying-glass" style="font-size: 1.5rem; margin-bottom: 8px; color: var(--que-pink); display: block;"></i> No matches found inside uploaded content.';
+          popularGrid.appendChild(noMatchMsg);
+        } else {
+          noMatchMsg.style.display = 'block';
+        }
+      } else if (noMatchMsg) {
+        noMatchMsg.style.display = 'none';
+      }
+    };
+
+    modalInput.addEventListener('input', filterHandler);
+    modalInput.addEventListener('keyup', filterHandler);
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const stored = localStorage.getItem('quetube_theme') || localStorage.getItem('queTheme') || 'dark';
+    setAppTheme(stored);
+    initSearchClearButtons();
+    initLiveSearchFiltering();
+    if (window.location.pathname.startsWith('/search')) {
+      const input = document.querySelector('input[name="q"], .que-search-input, .mobile-hdr-input');
+      if (input && (!input.value || input.value.trim().length === 0)) {
+        setTimeout(() => input.focus(), 150);
+      }
+    }
+  });
+
+  function enforceCleanSearchInput() {
+    const isSearchPage = window.location.pathname.startsWith('/search');
+    const searchModalOpen = document.getElementById('ov-search') && document.getElementById('ov-search').classList.contains('open');
+    if (!isSearchPage && !searchModalOpen) {
+      const inputs = document.querySelectorAll('input[name="q"], .que-search-input, .mobile-hdr-input, .modal-search-input');
+      inputs.forEach(inp => {
+        if (inp && document.activeElement !== inp) {
+          inp.value = '';
+        }
+      });
+    }
+    updateAllSearchClearBtns();
+  }
+
+  function goBackOrHome() {
+    enforceCleanSearchInput();
+    if (window.location.pathname.startsWith('/search')) {
+      window.location.href = '/';
+      return;
+    }
+    const ref = document.referrer;
+    if (ref && ref.indexOf(window.location.host) !== -1 && ref !== window.location.href) {
+      window.location.href = ref;
+    } else {
+      window.location.href = '/';
+    }
+  }
+
+  enforceCleanSearchInput();
+  document.addEventListener('DOMContentLoaded', enforceCleanSearchInput);
+  window.addEventListener('pageshow', () => {
+    enforceCleanSearchInput();
+    initSearchClearButtons();
+  });
+  window.addEventListener('popstate', enforceCleanSearchInput);
+
+  function toggleQueSidebar() {
+    const sidebar = document.getElementById('queSidebar') || document.querySelector('.que-sidebar');
+    if (!sidebar) return;
+
+    const isMobile = window.innerWidth <= 768;
+    const isClosed = sidebar.classList.contains('collapsed') || (isMobile ? !document.body.classList.contains('sidebar-open') : !document.body.classList.contains('sidebar-active'));
+
+    if (isClosed) {
+      sidebar.classList.remove('collapsed');
+      sidebar.style.display = 'flex';
+      sessionStorage.setItem('queSidebarState', 'open');
+      if (isMobile) {
+        document.body.classList.add('sidebar-open');
+        lockBodyScroll();
+      } else {
+        document.body.classList.add('sidebar-active');
+      }
+    } else {
+      sidebar.classList.add('collapsed');
+      sessionStorage.setItem('queSidebarState', 'closed');
+      if (isMobile) {
+        document.body.classList.remove('sidebar-open');
+        unlockBodyScroll();
+      } else {
+        document.body.classList.remove('sidebar-active');
+      }
+      setTimeout(() => {
+        if (sidebar.classList.contains('collapsed')) {
+          sidebar.style.display = '';
+        }
+      }, 300);
+    }
+  }
+
+  window.toggleQueSidebar = toggleQueSidebar;
+
+  // Prevent Android/Brave/iOS native browser edge swipe page shift (stops dragging page to right)
+  (function initPreventEdgeSwipeShift() {
+    let touchStartX = 0;
+    let touchStartY = 0;
+    let isLeftEdgeTouch = false;
+
+    window.addEventListener('touchstart', function(e) {
+      const isInteractive = e.target.closest('input, button, a, form, select, textarea, label, #hrail, #chips, .chips-in, .category-slider-container, .scroller');
+      if (isInteractive) {
+        isLeftEdgeTouch = false;
+        return;
+      }
+      if (e.touches && e.touches.length > 0) {
+        touchStartX = e.touches[0].clientX;
+        touchStartY = e.touches[0].clientY;
+        // Check if touch starts within left 40px of screen
+        isLeftEdgeTouch = (touchStartX < 40);
+      }
+    }, { passive: true });
+
+    window.addEventListener('touchmove', function(e) {
+      if (isLeftEdgeTouch && e.touches && e.touches.length > 0) {
+        const currentX = e.touches[0].clientX;
+        const currentY = e.touches[0].clientY;
+        const deltaX = currentX - touchStartX;
+        const deltaY = currentY - touchStartY;
+
+        const isInteractive = e.target.closest('input, button, a, form, select, textarea, label, #hrail, #chips, .chips-in, .category-slider-container, .scroller');
+
+        // Swiping right from left edge area
+        if (!isInteractive && deltaX > 8 && Math.abs(deltaX) > Math.abs(deltaY)) {
+          if (e.cancelable) {
+            e.preventDefault();
+          }
+        }
+      }
+    }, { passive: false });
+
+    window.addEventListener('touchend', function(e) {
+      if (isLeftEdgeTouch) {
+        const touchEndX = e.changedTouches && e.changedTouches.length > 0 ? e.changedTouches[0].clientX : touchStartX;
+        const deltaX = touchEndX - touchStartX;
+
+        if (deltaX > 50) {
+          const openOverlay = document.querySelector('.ov.open, .dw.open');
+          if (openOverlay) {
+            if (typeof closeSearchModal === 'function') closeSearchModal(true);
+            if (typeof closeCatsModal === 'function') closeCatsModal(true);
+            if (typeof closeDrawerModal === 'function') closeDrawerModal(true);
+          } else {
+            const path = window.location.pathname;
+            if (path !== '/' && path !== '') {
+              if (typeof goBackOrHome === 'function') goBackOrHome();
+            }
+          }
+        }
+      }
+      isLeftEdgeTouch = false;
+    }, { passive: true });
+  })();
+</script>

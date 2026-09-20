@@ -1,0 +1,19 @@
+{
+  "name": "que-tube",
+  "version": "1.0.0",
+  "description": "QueTube OTT Video Streaming Platform",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "dependencies": {
+    "ejs": "^3.1.10",
+    "express": "^4.21.2",
+    "express-session": "^1.19.0",
+    "multer": "^1.4.5-lts.1",
+    "socket.io": "^4.8.1",
+    "sqlite3": "^5.1.7",
+    "uuid": "^11.0.5"
+  }
+}
