@@ -152,7 +152,7 @@
               <% if (mobHeroVideos.length > 0) { %>
                 <% mobHeroVideos.forEach((mobHero, index) => { %>
                   <% 
-                    const heroBannerImg = (mobHero.mobile_image_url && mobHero.mobile_image_url.trim()) ? mobHero.mobile_image_url : (mobHero.thumbnail_url || "https://images.unsplash.com/photo-1578632767115-351597cf2477?auto=format&fit=crop&w=800&q=80");
+                    const heroBannerImg = (mobHero.thumbnail_url && mobHero.thumbnail_url.trim()) ? mobHero.thumbnail_url : (mobHero.mobile_image_url || "https://images.unsplash.com/photo-1578632767115-351597cf2477?auto=format&fit=crop&w=800&q=80");
                     const heroBannerLink = `/watch/${mobHero.id}`;
                   %>
                   <article class="slide <%= index === 0 ? 'active' : '' %>" data-id="<%= mobHero.id %>" data-idx="<%= index %>">
