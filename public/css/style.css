@@ -3594,7 +3594,7 @@ body.dark-mode {
     width: calc(100% - 24px);
     aspect-ratio: 16 / 9;
     scroll-snap-align: center;
-    border-radius: 16px;
+    border-radius: 8px;
     overflow: hidden !important;
     isolation: isolate;
     background: #101218;
@@ -3617,7 +3617,7 @@ body.dark-mode {
     height: 100% !important;
     object-fit: cover !important;
     object-position: center center !important;
-    border-radius: 16px !important;
+    border-radius: 8px !important;
     display: block !important;
     transform: none !important;
     transform-origin: center center;
