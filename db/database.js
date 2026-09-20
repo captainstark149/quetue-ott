@@ -84,8 +84,9 @@ db.serialize(() => {
       duration TEXT DEFAULT '03:45',
       release_date TEXT DEFAULT '',
       language TEXT DEFAULT '',
-      size TEXT DEFAULT '450Mb 740Mb 1.1Gb 2.7Gb 5.5Gb',
+      size TEXT DEFAULT '410Mb 680Mb 1Gb 2.5Gb 4.9Gb 6.1Gb 9.3Gb HD',
       quality TEXT DEFAULT 'PreDvD',
+      bio_label_type TEXT DEFAULT 'Bio',
       media_type TEXT DEFAULT 'video',
       tags TEXT,
       views INTEGER DEFAULT 0,
@@ -111,7 +112,7 @@ db.serialize(() => {
   db.run(`ALTER TABLE videos ADD COLUMN sidebar_image_url TEXT DEFAULT ''`, (err) => {});
   db.run(`ALTER TABLE videos ADD COLUMN short_about TEXT DEFAULT ''`, (err) => {});
   db.run(`ALTER TABLE videos ADD COLUMN movie_name TEXT DEFAULT ''`, (err) => {});
-  db.run(`ALTER TABLE videos ADD COLUMN size TEXT DEFAULT '450Mb 740Mb 1.1Gb 2.7Gb 5.5Gb'`, (err) => {});
+  db.run(`ALTER TABLE videos ADD COLUMN size TEXT DEFAULT '410Mb 680Mb 1Gb 2.5Gb 4.9Gb 6.1Gb 9.3Gb HD'`, (err) => {});
   db.run(`ALTER TABLE videos ADD COLUMN quality TEXT DEFAULT 'PreDvD'`, (err) => {});
   db.run(`ALTER TABLE videos ADD COLUMN bio_label_type TEXT DEFAULT 'Bio'`, (err) => {});
 
