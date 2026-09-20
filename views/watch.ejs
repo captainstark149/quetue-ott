@@ -45,7 +45,7 @@
         <h1 class="watch-video-title"><%= video.title %></h1>
 
         <div class="watch-bio-desc-box">
-          <span class="bio-label">Bio:</span>
+          <span class="bio-label">Description:</span>
           <span class="bio-val"><%= video.description || ((video.tags && video.tags.trim()) ? video.tags : (video.movie_name || video.title)) %></span>
         </div>
 
@@ -98,6 +98,11 @@
                 <span class="info-val val-lang"><%= video.language %></span>
               </div>
             <% } %>
+
+            <div class="info-row">
+              <span class="info-label">Bio:</span>
+              <span class="info-val val-starcast"><%= (video.tags && video.tags.trim()) ? video.tags : (video.movie_name || video.title) %></span>
+            </div>
 
             <div class="info-row">
               <span class="info-label">Size:</span>
