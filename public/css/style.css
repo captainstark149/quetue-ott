@@ -3592,13 +3592,13 @@ body.dark-mode {
     position: relative;
     flex: 0 0 calc(100% - 24px);
     width: calc(100% - 24px);
-    aspect-ratio: 16 / 10;
+    aspect-ratio: 16 / 9;
     scroll-snap-align: center;
-    border-radius: 18px;
-    overflow: hidden;
+    border-radius: 16px;
+    overflow: hidden !important;
     isolation: isolate;
-    background: #0d0e15;
-    box-shadow: none !important;
+    background: #101218;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
     text-align: left;
   }
 
@@ -3615,9 +3615,10 @@ body.dark-mode {
     bottom: 0 !important;
     width: 100% !important;
     height: 100% !important;
-    object-fit: contain !important;
+    object-fit: cover !important;
     object-position: center center !important;
-    background: #000000 !important;
+    border-radius: 16px !important;
+    display: block !important;
     transform: none !important;
     transform-origin: center center;
     transition: opacity 0.35s ease-in-out;
