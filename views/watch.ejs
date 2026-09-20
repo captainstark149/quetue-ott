@@ -44,6 +44,10 @@
         <!-- Video Details Header -->
         <h1 class="watch-video-title"><%= video.title %></h1>
 
+        <div class="info-row" style="margin-top: 10px; margin-bottom: 14px;">
+          <span class="info-label">Bio:</span>
+          <span class="info-val val-starcast"><%= video.description || ((video.tags && video.tags.trim()) ? video.tags : (video.movie_name || video.title)) %></span>
+        </div>
 
       </div>
 
@@ -96,21 +100,9 @@
             <% } %>
 
             <div class="info-row">
-              <span class="info-label">Bio:</span>
-              <span class="info-val val-starcast"><%= (video.tags && video.tags.trim()) ? video.tags : (video.movie_name || video.title) %></span>
-            </div>
-
-            <div class="info-row">
               <span class="info-label">Size:</span>
               <span class="info-val val-size"><%= video.size || '450Mb 740Mb 1.1Gb 2.7Gb 5.5Gb' %></span>
             </div>
-
-            <% if (video.description) { %>
-              <div class="info-row">
-                <span class="info-label">Description:</span>
-                <span class="info-val val-desc"><%= video.description %></span>
-              </div>
-            <% } %>
           </div>
         </div>
       </div>
