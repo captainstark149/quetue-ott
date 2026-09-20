@@ -3615,8 +3615,9 @@ body.dark-mode {
     bottom: 0 !important;
     width: 100% !important;
     height: 100% !important;
-    object-fit: cover !important;
+    object-fit: contain !important;
     object-position: center center !important;
+    background: #000000 !important;
     transform: none !important;
     transform-origin: center center;
     transition: opacity 0.35s ease-in-out;
