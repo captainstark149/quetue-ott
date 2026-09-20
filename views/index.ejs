@@ -141,15 +141,15 @@
         <div class="mobile-ott-home-wrapper">
           
           <% 
-            const mobHeroVideos = (typeof heroPositionVideos !== 'undefined' && heroPositionVideos.length > 0)
+            const mobHeroVideos = (typeof heroPositionVideos !== 'undefined' && heroPositionVideos && heroPositionVideos.length > 0)
               ? heroPositionVideos 
-              : ((typeof videos !== 'undefined' && videos.length > 0) ? videos.slice(0, 6) : []);
+              : [];
           %>
 
           <!-- 0. Mobile Hero Banner Rail (Horizontal Scroll Carousel) -->
-          <section id="hero" class="mobile-hero-section">
-            <div class="hrail" id="hrail">
-              <% if (mobHeroVideos.length > 0) { %>
+          <% if (mobHeroVideos.length > 0) { %>
+            <section id="hero" class="mobile-hero-section">
+              <div class="hrail" id="hrail">
                 <% mobHeroVideos.forEach((mobHero, index) => { %>
                   <% 
                     const heroBannerImg = (mobHero.thumbnail_url && mobHero.thumbnail_url.trim()) ? mobHero.thumbnail_url : (mobHero.mobile_image_url || "https://images.unsplash.com/photo-1578632767115-351597cf2477?auto=format&fit=crop&w=800&q=80");
@@ -167,14 +167,14 @@
                     </div>
                   </article>
                 <% }); %>
-              <% } %>
-            </div>
-            <div class="hdots" id="mobileHeroDots">
-              <% mobHeroVideos.forEach((v, idx) => { %>
-                <i class="<%= idx === 0 ? 'on' : '' %>" data-slide-index="<%= idx %>"></i>
-              <% }); %>
-            </div>
-          </section>
+              </div>
+              <div class="hdots" id="mobileHeroDots">
+                <% mobHeroVideos.forEach((v, idx) => { %>
+                  <i class="<%= idx === 0 ? 'on' : '' %>" data-slide-index="<%= idx %>"></i>
+                <% }); %>
+              </div>
+            </section>
+          <% } %>
 
           <!-- 1. Category Chips Bar -->
           <nav class="chips" aria-label="Categories">
