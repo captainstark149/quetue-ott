@@ -665,7 +665,8 @@ router.post('/update-video/:id', requireAdmin, upload.fields([
           language: updatedLanguage,
           size: updatedSize,
           quality: updatedQuality,
-          tags: updatedTags
+          tags: updatedTags,
+          bio_label_type: updatedBioLabelType
         });
 
         res.redirect('/admin249/dashboard?success=Post+updated+successfully');

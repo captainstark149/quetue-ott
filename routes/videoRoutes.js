@@ -219,6 +219,7 @@ router.post('/api/upload', requireAdmin, upload.fields([
           short_about: shortAboutVal,
           size: sizeVal,
           quality: qualityVal,
+          bio_label_type: bioLabelTypeVal,
           uploaded_at: new Date().toISOString()
         });
 
