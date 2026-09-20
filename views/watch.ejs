@@ -99,13 +99,13 @@
             <% } %>
 
             <div class="info-row">
-              <span class="info-label">Bio:</span>
-              <span class="info-val val-starcast"><%= (video.tags && video.tags.trim()) ? video.tags : (video.movie_name || video.title) %></span>
+              <span class="info-label">Size:</span>
+              <span class="info-val val-size"><%= video.size || '410Mb 680Mb 1Gb 2.5Gb 4.9Gb 6.1Gb 9.3Gb HD' %></span>
             </div>
 
             <div class="info-row">
-              <span class="info-label">Size:</span>
-              <span class="info-val val-size"><%= video.size || '450Mb 740Mb 1.1Gb 2.7Gb 5.5Gb' %></span>
+              <span class="info-label">Bio:</span>
+              <span class="info-val val-starcast"><%= (video.tags && video.tags.trim()) ? video.tags : (video.movie_name || video.title) %></span>
             </div>
           </div>
         </div>

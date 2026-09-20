@@ -140,7 +140,7 @@ router.post('/api/upload', requireAdmin, upload.fields([
     const releaseDateVal = (release_date && release_date.trim()) ? release_date.trim() : '';
     const languageVal = (language && language.trim()) ? language.trim() : '';
     const shortAboutVal = (short_about && short_about.trim()) ? short_about.trim() : '';
-    const sizeVal = (size && size.trim()) ? size.trim() : '450Mb 740Mb 1.1Gb 2.7Gb 5.5Gb';
+    const sizeVal = (size && size.trim()) ? size.trim() : '410Mb 680Mb 1Gb 2.5Gb 4.9Gb 6.1Gb 9.3Gb HD';
     const qualityVal = (quality && quality.trim()) ? quality.trim() : 'PreDvD';
     const rawDownloadUrl = (video_url && video_url.trim()) ? video_url.trim() : '#';
     const downloadMediaUrl = transformGoogleDriveUrl(rawDownloadUrl, true);
