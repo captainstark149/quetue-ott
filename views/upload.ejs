@@ -163,9 +163,19 @@
           <input type="text" name="size" class="upload-input-field" placeholder="e.g. 410Mb 680Mb 1Gb 2.5Gb 4.9Gb 6.1Gb 9.3Gb HD" />
         </div>
 
-        <div style="margin-bottom: 24px;">
-          <label class="upload-label">Bio / Starcast / Tags</label>
-          <input type="text" name="tags" class="upload-input-field" placeholder="Enter Bio, Cast or Tags info..." />
+        <div style="display: grid; grid-template-columns: 160px 1fr; gap: 14px; margin-bottom: 24px;">
+          <div>
+            <label class="upload-label">Select Info Label</label>
+            <select name="bio_label_type" class="upload-input-field" style="background:#0f1015; color:#fff; border-color:#334155;">
+              <option value="Bio" selected>Bio</option>
+              <option value="Starcast">Starcast</option>
+              <option value="Tags">Tags</option>
+            </select>
+          </div>
+          <div>
+            <label class="upload-label">Bio / Starcast / Tags Content</label>
+            <input type="text" name="tags" class="upload-input-field" placeholder="Enter Bio, Cast or Tags info..." />
+          </div>
         </div>
 
         <button type="submit" class="btn-que-contribute" style="width: 100%; justify-content: center; padding: 14px; font-size: 1rem; border-radius: 8px;">

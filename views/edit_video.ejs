@@ -187,9 +187,19 @@
           <input type="text" name="size" value="<%= video.size || '' %>" class="danmaku-input" style="width:100%; border-radius:6px; background: #0f1015; border-color: #334155; color: #fff;" placeholder="e.g. 410Mb 680Mb 1Gb 2.5Gb 4.9Gb 6.1Gb 9.3Gb HD" />
         </div>
 
-        <div style="margin-bottom: 24px;">
-          <label style="display:block; font-weight:700; font-size:0.88rem; color: #cbd5e1; margin-bottom:6px;">Bio / Starcast / Tags</label>
-          <input type="text" name="tags" value="<%= video.tags || '' %>" class="danmaku-input" style="width:100%; border-radius:6px; background: #0f1015; border-color: #334155; color: #fff;" placeholder="Enter Bio, Cast or Tags info..." />
+        <div style="display: grid; grid-template-columns: 160px 1fr; gap: 14px; margin-bottom: 24px;">
+          <div>
+            <label style="display:block; font-weight:700; font-size:0.88rem; color: #cbd5e1; margin-bottom:6px;">Select Info Label</label>
+            <select name="bio_label_type" class="danmaku-input" style="width:100%; border-radius:6px; background: #0f1015; border-color: #334155; color: #fff;">
+              <option value="Bio" <%= (video.bio_label_type === 'Bio' || !video.bio_label_type) ? 'selected' : '' %>>Bio</option>
+              <option value="Starcast" <%= video.bio_label_type === 'Starcast' ? 'selected' : '' %>>Starcast</option>
+              <option value="Tags" <%= video.bio_label_type === 'Tags' ? 'selected' : '' %>>Tags</option>
+            </select>
+          </div>
+          <div>
+            <label style="display:block; font-weight:700; font-size:0.88rem; color: #cbd5e1; margin-bottom:6px;">Bio / Starcast / Tags Content</label>
+            <input type="text" name="tags" value="<%= video.tags || '' %>" class="danmaku-input" style="width:100%; border-radius:6px; background: #0f1015; border-color: #334155; color: #fff;" placeholder="Enter Bio, Cast or Tags info..." />
+          </div>
         </div>
 
         <button type="submit" class="btn-que-contribute" id="saveEditBtn" style="width: 100%; justify-content: center; padding: 14px; font-size: 1rem; border-radius: 8px; background: #00a1d6; color: #fff; cursor: pointer;">

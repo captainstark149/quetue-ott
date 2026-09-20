@@ -113,6 +113,7 @@ db.serialize(() => {
   db.run(`ALTER TABLE videos ADD COLUMN movie_name TEXT DEFAULT ''`, (err) => {});
   db.run(`ALTER TABLE videos ADD COLUMN size TEXT DEFAULT '450Mb 740Mb 1.1Gb 2.7Gb 5.5Gb'`, (err) => {});
   db.run(`ALTER TABLE videos ADD COLUMN quality TEXT DEFAULT 'PreDvD'`, (err) => {});
+  db.run(`ALTER TABLE videos ADD COLUMN bio_label_type TEXT DEFAULT 'Bio'`, (err) => {});
 
   // 3. Comments Table
   db.run(`

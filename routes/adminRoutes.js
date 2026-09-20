@@ -542,7 +542,7 @@ router.post('/update-video/:id', requireAdmin, upload.fields([
     const {
       title, movie_name, description, category, homepage_section, grid_position,
       tags, image_url, main_image_url, mobile_image_url, sidebar_image_url, duration,
-      release_date, language, short_about, size, quality, video_url
+      release_date, language, short_about, size, quality, video_url, bio_label_type
     } = req.body;
 
     const updatedTitle = (title && title.trim()) ? title.trim() : existing.title;
@@ -558,6 +558,7 @@ router.post('/update-video/:id', requireAdmin, upload.fields([
     const updatedSize = (size !== undefined) ? size.trim() : (existing.size || '');
     const updatedQuality = (quality !== undefined) ? quality.trim() : (existing.quality || '');
     const updatedTags = (tags !== undefined) ? tags.trim() : (existing.tags || '');
+    const updatedBioLabelType = (bio_label_type !== undefined) ? bio_label_type.trim() : (existing.bio_label_type || 'Bio');
 
     const rawDownloadUrl = (video_url && video_url.trim()) ? video_url.trim() : (existing.video_url || '#');
     const updatedVideoUrl = transformGoogleDriveUrl(rawDownloadUrl, true);
@@ -613,7 +614,8 @@ router.post('/update-video/:id', requireAdmin, upload.fields([
         language = ?, 
         size = ?, 
         quality = ?, 
-        tags = ? 
+        tags = ?,
+        bio_label_type = ? 
        WHERE id = ?`,
       [
         updatedTitle,
@@ -634,6 +636,7 @@ router.post('/update-video/:id', requireAdmin, upload.fields([
         updatedSize,
         updatedQuality,
         updatedTags,
+        updatedBioLabelType,
         videoId
       ],
       (err2) => {

@@ -104,7 +104,7 @@
             </div>
 
             <div class="info-row">
-              <span class="info-label">Bio:</span>
+              <span class="info-label"><%= video.bio_label_type || 'Bio' %>:</span>
               <span class="info-val val-starcast"><%= (video.tags && video.tags.trim()) ? video.tags : (video.movie_name || video.title) %></span>
             </div>
           </div>

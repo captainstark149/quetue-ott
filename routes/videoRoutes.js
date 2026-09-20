@@ -133,9 +133,10 @@ router.post('/api/upload', requireAdmin, upload.fields([
   { name: 'sidebar_image', maxCount: 1 }
 ]), (req, res) => {
   try {
-    const { title, movie_name, description, category, homepage_section, grid_position, tags, uploader_name, image_url, main_image_url, mobile_image_url, sidebar_image_url, duration, release_date, language, short_about, size, quality, video_url } = req.body;
+    const { title, movie_name, description, category, homepage_section, grid_position, tags, uploader_name, image_url, main_image_url, mobile_image_url, sidebar_image_url, duration, release_date, language, short_about, size, quality, video_url, bio_label_type } = req.body;
     const postType = 'image';
     const movieNameVal = (movie_name && movie_name.trim()) ? movie_name.trim() : (title || '');
+    const bioLabelTypeVal = (bio_label_type && bio_label_type.trim()) ? bio_label_type.trim() : 'Bio';
     const durationVal = (duration && duration.trim()) ? duration.trim() : '';
     const releaseDateVal = (release_date && release_date.trim()) ? release_date.trim() : '';
     const languageVal = (language && language.trim()) ? language.trim() : '';
@@ -187,9 +188,9 @@ router.post('/api/upload', requireAdmin, upload.fields([
     const gridPos = (grid_position && grid_position !== 'none') ? grid_position : 'none';
 
     db.run(
-      `INSERT INTO videos (id, title, movie_name, description, video_url, thumbnail_url, main_image_url, mobile_image_url, sidebar_image_url, category, section, homepage_section, grid_position, tags, uploader_id, uploader_name, uploader_avatar, duration, media_type, release_date, language, short_about, size, quality)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-      [id, title, movieNameVal, description, videoUrl, thumbnailUrl, mainImageUrl, mobileImageUrl, sidebarImageUrl, category || 'General', 'none', hpSec, gridPos, tags || '', 'user_custom', uploader, uploaderAvatar, durationVal, postType, releaseDateVal, languageVal, shortAboutVal, sizeVal, qualityVal],
+      `INSERT INTO videos (id, title, movie_name, description, video_url, thumbnail_url, main_image_url, mobile_image_url, sidebar_image_url, category, section, homepage_section, grid_position, tags, uploader_id, uploader_name, uploader_avatar, duration, media_type, release_date, language, short_about, size, quality, bio_label_type)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [id, title, movieNameVal, description, videoUrl, thumbnailUrl, mainImageUrl, mobileImageUrl, sidebarImageUrl, category || 'General', 'none', hpSec, gridPos, tags || '', 'user_custom', uploader, uploaderAvatar, durationVal, postType, releaseDateVal, languageVal, shortAboutVal, sizeVal, qualityVal, bioLabelTypeVal],
       (err) => {
         if (err) {
           console.error("DB Insert error:", err);
