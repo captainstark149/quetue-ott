@@ -745,24 +745,31 @@ input[type="search"]::-webkit-search-results-decoration {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  width: 36px;
-  height: 36px;
-  background: rgba(255, 255, 255, 0.85);
-  border: none;
-  color: var(--text-main);
+  width: 40px;
+  height: 40px;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  color: #ffffff !important;
   border-radius: 50%;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.9rem;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-  transition: background 0.2s ease;
-  z-index: 6;
+  font-size: 1rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  transition: all 0.2s ease;
+  z-index: 10;
 }
-.hero-arrow-nav:hover { background: #ffffff; }
-.hero-arrow-nav.left { left: 14px; }
-.hero-arrow-nav.right { right: 14px; }
+.hero-arrow-nav:hover { 
+  background: rgba(251, 114, 153, 0.9);
+  border-color: #fb7299;
+  color: #ffffff !important;
+  transform: translateY(-50%) scale(1.08);
+}
+.hero-arrow-nav.left { left: 16px; }
+.hero-arrow-nav.right { right: 16px; }
 
 /* 2x2 Grid */
 .top-2x2-grid {
