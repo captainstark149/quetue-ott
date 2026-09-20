@@ -716,9 +716,7 @@ input[type="search"]::-webkit-search-results-decoration {
 }
 
 .hero-sub-text {
-  font-size: 0.88rem;
-  color: #f1f2f5;
-  text-shadow: 0 1px 4px rgba(0,0,0,0.8);
+  display: none !important;
 }
 
 .hero-pagination-dots {
